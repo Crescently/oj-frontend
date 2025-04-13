@@ -84,7 +84,7 @@ export async function updatePassword(
 
 /** 此处后端没有提供注释 GET /user/userInfo */
 export async function getUserInfo(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUserInfoResponse>('/user/userInfo', {
+  return request<API.BaseResponseUserVo>('/user/userInfo', {
     method: 'GET',
     ...(options || {}),
   });

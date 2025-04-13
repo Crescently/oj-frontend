@@ -5,11 +5,11 @@ import { type ProColumns, ProTable } from '@ant-design/pro-components';
 import { updateUser } from '@/services/onlinejudge-backend/adminController';
 
 interface Props {
-  oldData?: API.ListUserInfoResponse;
+  oldData?: API.UserVo;
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  columns: ProColumns<API.ListUserInfoResponse>[];
+  columns: ProColumns<API.UserVo>[];
 }
 
 const UpdateUserForm: React.FC<Props> = (props) => {
@@ -17,7 +17,7 @@ const UpdateUserForm: React.FC<Props> = (props) => {
   if (!oldData) {
     return <></>;
   }
-  const handleUpdate = async (fields: API.UpdateUserInfoRequest) => {
+  const handleUpdate = async (fields: API.UserInfoUpdateRequest) => {
     const hide = message.loading('正在更新');
     try {
       await updateUser({

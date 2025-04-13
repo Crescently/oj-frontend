@@ -12,14 +12,14 @@ const UserManagePage: React.FC = () => {
   const [addUserFormOpen, setAddUserFormOpen] = useState<boolean>(false);
   const [updateUserFormOpen, setUpdateUserFormOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.ListUserInfoResponse>();
+  const [currentRow, setCurrentRow] = useState<API.UserVo>();
   const [userQueryParams, setUserQueryParams] = useState({
     userAccount: '',
     username: '',
     userRole: '',
   });
 
-  const handleDelete = async (row: API.ListUserInfoResponse) => {
+  const handleDelete = async (row: API.UserVo) => {
     const hide = message.loading('正在删除');
     if (!row) {
       return true;
@@ -43,7 +43,7 @@ const UserManagePage: React.FC = () => {
   /**
    * 表格列配置
    */
-  const columns: ProColumns<API.ListUserInfoResponse>[] = [
+  const columns: ProColumns<API.UserVo>[] = [
     {
       title: '用户ID',
       dataIndex: 'id',
@@ -135,7 +135,7 @@ const UserManagePage: React.FC = () => {
   ];
   return (
     <PageContainer>
-      <ProTable<API.ListUserInfoResponse, API.UserQueryRequest>
+      <ProTable<API.UserVo, API.UserQueryRequest>
         actionRef={actionRef}
         rowKey="id"
         search={{

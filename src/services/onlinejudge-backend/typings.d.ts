@@ -11,10 +11,10 @@ declare namespace API {
     data?: boolean;
   };
 
-  type BaseResponsePageBeanListUserInfoResponse = {
+  type BaseResponsePageBeanUserVo = {
     code?: number;
     msg?: string;
-    data?: PageBeanListUserInfoResponse;
+    data?: PageBeanUserVo;
   };
 
   type BaseResponseString = {
@@ -23,54 +23,29 @@ declare namespace API {
     data?: string;
   };
 
-  type BaseResponseUserInfoResponse = {
-    code?: number;
-    msg?: string;
-    data?: UserInfoResponse;
-  };
-
   type BaseResponseUserLoginResponse = {
     code?: number;
     msg?: string;
     data?: UserLoginResponse;
   };
 
+  type BaseResponseUserVo = {
+    code?: number;
+    msg?: string;
+    data?: UserVo;
+  };
+
   type DeleteRequest = {
     id?: number;
   };
 
-  type ListUserInfoResponse = {
-    id?: number;
-    userAccount?: string;
-    username?: string;
-    userEmail?: string;
-    userRole?: string;
-    description?: string;
-    createTime?: string;
-    updateTime?: string;
-  };
-
-  type PageBeanListUserInfoResponse = {
+  type PageBeanUserVo = {
     total?: number;
-    items?: ListUserInfoResponse[];
+    items?: UserVo[];
   };
 
   type updateAvatarParams = {
     avatarUrl: string;
-  };
-
-  type UpdateUserInfoRequest = {
-    id?: number;
-    userAccount?: string;
-    username?: string;
-    userEmail?: string;
-    description?: string;
-    userRole?: string;
-  };
-
-  type UpdateUserRoleRequest = {
-    userAccount: string;
-    newUserRole: string;
   };
 
   type UserAddRequest = {
@@ -81,13 +56,13 @@ declare namespace API {
     userRole?: string;
   };
 
-  type UserInfoResponse = {
+  type UserInfoUpdateRequest = {
     id?: number;
     userAccount?: string;
     username?: string;
     userEmail?: string;
+    description?: string;
     userRole?: string;
-    userPic?: string;
   };
 
   type UserLoginRequest = {
@@ -124,6 +99,11 @@ declare namespace API {
     userEmail: string;
   };
 
+  type UserRoleUpdateRequest = {
+    userAccount: string;
+    newUserRole: string;
+  };
+
   type UserUpdateInfoRequest = {
     username: string;
     userEmail: string;
@@ -133,5 +113,17 @@ declare namespace API {
     oldPassword: string;
     newPassword: string;
     rePassword: string;
+  };
+
+  type UserVo = {
+    id?: number;
+    userAccount?: string;
+    username?: string;
+    userEmail?: string;
+    userRole?: string;
+    userPic?: string;
+    description?: string;
+    createTime?: string;
+    updateTime?: string;
   };
 }

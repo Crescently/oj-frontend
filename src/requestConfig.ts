@@ -11,6 +11,10 @@ export const requestConfig: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
     (config: any) => {
+      const token = localStorage.getItem("token")
+      if (token) {
+        config.headers.Authorization = token
+      }
       return config;
     },
   ],
