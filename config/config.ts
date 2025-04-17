@@ -3,6 +3,7 @@ import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+import MonacoEditorWebpackPlugin from "monaco-editor-webpack-plugin";
 
 const { REACT_APP_ENV = 'dev' } = process.env;
 export default defineConfig({
@@ -139,4 +140,11 @@ export default defineConfig({
   },
   esbuildMinifyIIFE: true,
   requestRecord: {},
+  chainWebpack(config, { webpack }) {
+    config.plugin('monaco-editor').use(MonacoEditorWebpackPlugin, [
+      {
+        languages: ['java','cpp','go','python',],
+      },
+    ]);
+  },
 });

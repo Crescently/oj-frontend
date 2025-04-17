@@ -36,8 +36,6 @@ const Login: React.FC = () => {
         ...initialState,
         currentUser: res.data,
       });
-      // 保存已登录用户token
-      localStorage.setItem("token", res.data?.token ?? '');
       const urlParams = new URL(window.location.href).searchParams;
       history.push(urlParams.get('redirect') || '/');
       return;

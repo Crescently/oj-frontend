@@ -4,7 +4,7 @@ import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 POST /user/login */
 export async function userLogin(body: API.UserLoginRequest, options?: { [key: string]: any }) {
-  return request<API.BaseResponseUserLoginResponse>('/user/login', {
+  return request<API.BaseResponseLoginUserVO>('/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -52,27 +52,27 @@ export async function updateUserInfo(
   });
 }
 
-/** 此处后端没有提供注释 PATCH /user/updateAvatar */
+/** 此处后端没有提供注释 PATCH /user/update/avatar */
 export async function updateAvatar(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.updateAvatarParams,
+  body: API.UserUpdateAvatarRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponse>('/user/updateAvatar', {
+  return request<API.BaseResponse>('/user/update/avatar', {
     method: 'PATCH',
-    params: {
-      ...params,
+    headers: {
+      'Content-Type': 'application/json',
     },
+    data: body,
     ...(options || {}),
   });
 }
 
-/** 此处后端没有提供注释 PATCH /user/updatePwd */
+/** 此处后端没有提供注释 PATCH /user/update/pwd */
 export async function updatePassword(
   body: API.UserUpdatePwdRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponse>('/user/updatePwd', {
+  return request<API.BaseResponse>('/user/update/pwd', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export async function updatePassword(
 
 /** 此处后端没有提供注释 GET /user/userInfo */
 export async function getUserInfo(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUserVo>('/user/userInfo', {
+  return request<API.BaseResponseUserVO>('/user/userInfo', {
     method: 'GET',
     ...(options || {}),
   });

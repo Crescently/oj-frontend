@@ -11,10 +11,6 @@ export const requestConfig: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
     (config: any) => {
-      const token = localStorage.getItem("token")
-      if (token) {
-        config.headers.Authorization = token
-      }
       return config;
     },
   ],
@@ -23,8 +19,8 @@ export const requestConfig: RequestConfig = {
     (response: any) => {
       // 拦截响应数据，进行个性化处理
       const data = response.data as API.BaseResponse;
-      if (data.code === 401) {
-        message.error('未登录');
+      if (data.code === 40100) {
+        message.error('未登录').then();
         history.push('/user/login');
       }
       return response;

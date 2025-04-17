@@ -5,11 +5,11 @@ import { type ProColumns, ProTable } from '@ant-design/pro-components';
 import { updateUser } from '@/services/onlinejudge-backend/adminController';
 
 interface Props {
-  oldData?: API.UserVo;
+  oldData?: API.UserVO;
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  columns: ProColumns<API.UserVo>[];
+  columns: ProColumns<API.UserVO>[];
 }
 
 const UpdateUserForm: React.FC<Props> = (props) => {

@@ -8,6 +8,7 @@ export default [
     ],
   },
   { path: '/welcome', name: '欢迎页', icon: 'smile', component: './Welcome' },
+  { path: '/test', name: '测试页', icon:'setting',component: './Test' },
   {
     path: '/admin',
     name: '管理页',
@@ -29,5 +30,6 @@ export default [
     ],
   },
   { path: '/', redirect: '/welcome' },
+
   { path: '*', layout: false, component: './404' },
 ];

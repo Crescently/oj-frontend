@@ -6,6 +6,7 @@ import React from 'react';
 import NoAuth from '@/pages/NoAuth';
 import { getUserInfo } from '@/services/onlinejudge-backend/userController';
 import defaultSettings from '../config/defaultSettings';
+import 'bytemd/dist/index.css';
 
 const loginPath = '/user/login';
 
@@ -32,9 +33,7 @@ export const layout: RunTimeLayoutConfig = () => {
         return <AvatarDropdown />;
       },
     },
-    footerRender: () => (
-        <Footer />
-    ),
+    footerRender: () => <Footer />,
     menuHeaderRender: undefined,
     // 自定义 403 页面
     unAccessible: <NoAuth />,

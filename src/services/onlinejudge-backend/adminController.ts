@@ -28,7 +28,7 @@ export async function deleteUser(body: API.DeleteRequest, options?: { [key: stri
 
 /** 此处后端没有提供注释 POST /admin/list */
 export async function listUserByPage(body: API.UserQueryRequest, options?: { [key: string]: any }) {
-  return request<API.BaseResponsePageBeanUserVo>('/admin/list', {
+  return request<API.BaseResponsePageUser>('/admin/list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -53,12 +53,12 @@ export async function updateUser(
   });
 }
 
-/** 此处后端没有提供注释 PUT /admin/updateUserRole */
+/** 此处后端没有提供注释 PUT /admin/update/role */
 export async function updateUserRole(
   body: API.UserRoleUpdateRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponse>('/admin/updateUserRole', {
+  return request<API.BaseResponse>('/admin/update/role', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ interface Props {
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  columns: ProColumns<API.UserVo>[];
+  columns: ProColumns<API.UserVO>[];
 }
 
 const AddUserForm: React.FC<Props> = (props) => {

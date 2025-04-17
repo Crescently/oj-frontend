@@ -8,5 +8,7 @@
 import Footer from './Footer';
 import {AvatarDropdown} from './RightContent/AvatarDropdown';
 import MyDivider from '@/components/MyDivider';
+import MdEditor from '@/components/MdEditor';
+import CodeEditor from '@/components/CodeEditor';
 
-export { Footer, AvatarDropdown, MyDivider };
+export { Footer, AvatarDropdown, MyDivider, MdEditor, CodeEditor };
