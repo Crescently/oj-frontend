@@ -47,6 +47,12 @@ declare namespace API {
     data?: PageUser;
   };
 
+  type BaseResponseQuestionAdminVO = {
+    code?: number;
+    msg?: string;
+    data?: QuestionAdminVO;
+  };
+
   type BaseResponseQuestionVO = {
     code?: number;
     msg?: string;
@@ -67,6 +73,10 @@ declare namespace API {
 
   type DeleteRequest = {
     id?: number;
+  };
+
+  type getQuestionByIdParams = {
+    id: number;
   };
 
   type getQuestionVOByIdParams = {
@@ -97,6 +107,9 @@ declare namespace API {
     username?: string;
     userEmail?: string;
     userPic?: string;
+    description?: string;
+    createTime?: string;
+    updateTime?: string;
   };
 
   type OrderItem = {
@@ -185,6 +198,20 @@ declare namespace API {
     answer?: string;
     judgeCase?: JudgeCase[];
     judgeConfig?: JudgeConfig;
+  };
+
+  type QuestionAdminVO = {
+    id?: number;
+    title?: string;
+    content?: string;
+    tags?: string[];
+    answer?: string;
+    submitNum?: number;
+    acceptedNum?: number;
+    judgeCase?: JudgeCase[];
+    judgeConfig?: JudgeConfig;
+    thumbNum?: number;
+    favourNum?: number;
   };
 
   type QuestionEditRequest = {

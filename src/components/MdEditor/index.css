@@ -1,0 +1,5 @@
+.bytemd-toolbar-icon.bytemd-tippy.bytemd-tippy-right:nth-last-of-type(1),
+.bytemd-toolbar-icon.bytemd-tippy.bytemd-tippy-right:nth-last-of-type(2) {
+  /* 样式 */
+  display: none;
+}

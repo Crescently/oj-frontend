@@ -41,6 +41,21 @@ export async function editQuestion(
   });
 }
 
+/** 此处后端没有提供注释 GET /question/get */
+export async function getQuestionById(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getQuestionByIdParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseQuestionAdminVO>('/question/get', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /question/get/vo */
 export async function getQuestionVoById(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
@@ -72,7 +87,7 @@ export async function listQuestionByPage(
 }
 
 /** 此处后端没有提供注释 POST /question/list/page/vo */
-export async function listQuestionVoByPage1(
+export async function listQuestionVoByPage(
   body: API.QuestionQueryRequest,
   options?: { [key: string]: any },
 ) {

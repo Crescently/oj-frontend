@@ -30,8 +30,7 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ value, handleEditorChange }) => {
-
-  const [currentLang, setCurrentLang] = useState('javascript');
+  const [currentLang, setCurrentLang] = useState('java');
 
   const handleEditorDidMount: OnMount = (editor) => {
     const model = editor.getModel();

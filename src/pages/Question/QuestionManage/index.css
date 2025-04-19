@@ -1,0 +1,23 @@
+
+.ant-collapse-header {
+  padding: 8px 0 !important;
+}
+
+.io-block {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+
+  pre {
+    margin: 0;
+  }
+
+  &.input-block {
+    background: #f6ffed;
+  }
+
+  &.output-block {
+    background: #f6ffed;
+  }
+}

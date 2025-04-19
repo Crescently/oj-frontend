@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 POST /question_submit/list/page */
-export async function listQuestionVoByPage(
+export async function listQuestionSubmitVoByPage(
   body: API.QuestionSubmitQueryRequest,
   options?: { [key: string]: any },
 ) {
