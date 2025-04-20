@@ -1,5 +1,4 @@
-import {ProLayoutProps} from '@ant-design/pro-components';
-
+import { ProLayoutProps } from '@ant-design/pro-components';
 
 const Settings: ProLayoutProps & {
   pwa?: boolean;
@@ -7,12 +6,12 @@ const Settings: ProLayoutProps & {
 } = {
   navTheme: 'light',
   colorPrimary: '#1890ff',
-  layout: 'mix',
+  layout: 'top',
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: '',
+  title: '在线判题平台',
   pwa: true,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',

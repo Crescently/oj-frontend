@@ -1,5 +1,5 @@
 import Editor, { OnMount } from '@monaco-editor/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { editor } from 'monaco-editor';
 import IStandaloneEditorConstructionOptions = editor.IStandaloneEditorConstructionOptions;
 
@@ -25,32 +25,37 @@ const editorOptions: IStandaloneEditorConstructionOptions = {
 };
 
 interface CodeEditorProps {
-  value: string;
-  handleEditorChange: (value: string | undefined) => void;
+  value?: string;
+  language?: string;
+  onChange?: (value: string | undefined) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ value, handleEditorChange }) => {
-  const [currentLang, setCurrentLang] = useState('java');
+const CodeEditor: React.FC<CodeEditorProps> = ({ value, language = 'java', onChange }) => {
+  // 移除内部状态管理，直接使用父组件传递的 language
+  const [editorInstance, setEditorInstance] = useState<editor.IStandaloneCodeEditor>();
 
   const handleEditorDidMount: OnMount = (editor) => {
-    const model = editor.getModel();
-    if (model) {
-      const language = model.getLanguageId();
-      setCurrentLang(language); // 设置当前语言
-    }
+    setEditorInstance(editor);
   };
+
+  // 添加语言同步逻辑
+  useEffect(() => {
+    if (editorInstance && language) {
+      const model = editorInstance.getModel();
+      if (model && model.getLanguageId() !== language) {
+        editor.setModelLanguage(model, language);
+      }
+    }
+  }, [language, editorInstance]);
 
   return (
     <>
-      <div>
-        当前语言：<strong>{currentLang}</strong>
-      </div>
       <Editor
-        height="500px"
-        language={currentLang}
+        height="750px"
+        language={language}
         saveViewState={true}
         value={value}
-        onChange={handleEditorChange}
+        onChange={onChange}
         onMount={handleEditorDidMount}
         options={editorOptions}
       />

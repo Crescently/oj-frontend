@@ -1,4 +1,4 @@
-import { AvatarDropdown, Footer } from '@/components';
+import { AvatarDropdown } from '@/components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import { requestConfig } from './requestConfig';
@@ -33,7 +33,7 @@ export const layout: RunTimeLayoutConfig = () => {
         return <AvatarDropdown />;
       },
     },
-    footerRender: () => <Footer />,
+    // footerRender: () => <Footer />,
     menuHeaderRender: undefined,
     // 自定义 403 页面
     unAccessible: <NoAuth />,

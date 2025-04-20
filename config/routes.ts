@@ -7,8 +7,7 @@ export default [
       { name: '注册', path: '/user/register', component: './User/Register' },
     ],
   },
-  { path: '/welcome', name: '欢迎页', icon: 'smile', component: './Welcome' },
-  { path: '/test', name: '测试页', icon: 'setting', component: './Test' },
+  { path: '/home', name: '主页', icon: 'home', component: './Question/ViewQuestion' },
   {
     path: '/admin',
     name: '管理页',
@@ -34,11 +33,14 @@ export default [
   },
   {
     path: '/update/question/:id',
-    name: '修改题目',
-    icon: 'form',
     access: 'canUser',
     hideInMenu: true,
     component: './Question/UpdateQuestion',
+  },
+  {
+    path: '/submit/question/:id',
+    hideInMenu: true,
+    component: './Question/SubmitQuestion',
   },
   {
     path: '/account',
@@ -50,6 +52,6 @@ export default [
       },
     ],
   },
-  { path: '/', redirect: '/welcome' },
+  { path: '/', redirect: '/home' },
   { path: '*', layout: false, component: './404' },
 ];

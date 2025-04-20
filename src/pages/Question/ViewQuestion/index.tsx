@@ -1,0 +1,149 @@
+import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
+import { listQuestionVoByPage } from '@/services/onlinejudge-backend/questionController';
+import React, { useRef, useState } from 'react';
+import { Space, Tag } from 'antd';
+import Typography from 'antd/lib/typography';
+import { history } from '@@/core/history';
+import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
+
+interface questionParams {
+  title?: string;
+  tags?: string[];
+}
+
+const ViewQuestion = () => {
+  const actionRef = useRef<ActionType>();
+
+  const [questionParams, setQuestionParams] = useState<questionParams>({
+    title: '',
+    tags: [],
+  });
+
+  const columns: ProColumns<API.QuestionVO>[] = [
+    {
+      title: '题目ID',
+      dataIndex: 'id',
+      valueType: 'index',
+      hideInSearch: true,
+    },
+    {
+      title: '题目',
+      dataIndex: 'title',
+      valueType: 'text',
+    },
+    {
+      title: '标签',
+      dataIndex: 'tags',
+      render: (_, record) => {
+        if (record?.tags) {
+          return (
+            <Space size={4}>
+              {record?.tags.map((tag, index) => (
+                <Tag key={index} style={{ margin: '2px 4px 2px 0' }} color={'green'}>
+                  {tag.trim()}
+                </Tag>
+              ))}
+            </Space>
+          );
+        }
+        return <Tag>空</Tag>;
+      },
+      renderFormItem: () => {
+        return <TagInput />;
+      },
+    },
+    {
+      title: '通过率',
+      dataIndex: 'acceptedNum',
+      render: (_, record) => {
+        return (
+          <Space size={4}>
+            <Typography.Text>
+              {record.submitNum ? (record.acceptedNum ?? 0) / record.submitNum : '0'}%
+            </Typography.Text>
+            <Typography.Text>
+              {record.acceptedNum}/{record.submitNum}
+            </Typography.Text>
+          </Space>
+        );
+      },
+      hideInSearch: true,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      valueType: 'date',
+      hideInSearch: true,
+    },
+    {
+      title: '',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => (
+        <Space size={'middle'}>
+          <Typography.Link
+            key={'submit'}
+            onClick={() => {
+              history.push(`/submit/question/${record.id}`);
+            }}
+          >
+            做题
+          </Typography.Link>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <PageContainer title={'浏览题目'}>
+      <ProTable<API.QuestionVO, API.QuestionQueryRequest>
+        actionRef={actionRef}
+        rowKey="id"
+        search={{
+          span: 8,
+          labelWidth: 64,
+        }}
+        pagination={{
+          pageSize: 10,
+        }}
+        params={questionParams}
+        onSubmit={(params) => {
+          const { title, content, tags } = params;
+          setQuestionParams((prevState) => {
+            return {
+              ...prevState,
+              title: title || '',
+              content: content || '',
+              tags: tags || ([] as string[]),
+            };
+          });
+          actionRef.current?.reload();
+        }}
+        request={async (params) => {
+          const newParams = {
+            ...params,
+            current: 1,
+            pageSize: 10,
+          };
+          const res = await listQuestionVoByPage(newParams);
+          if (res.data) {
+            return {
+              data: res.data.records,
+              success: true,
+              total: res.data.total,
+            };
+          } else {
+            return {
+              data: [],
+              success: false,
+              total: 0,
+            };
+          }
+        }}
+        columns={columns}
+      />
+    </PageContainer>
+  );
+};
+
+export default ViewQuestion;
