@@ -44,11 +44,19 @@ export default [
   },
   {
     path: '/account',
+    name: '个人页',
+    icon: 'user',
     routes: [
+      { path: '/account', redirect: '/account/center' },
       {
         name: '个人中心',
         path: '/account/center',
         component: './User/UserInfo',
+      },
+      {
+        name: '个人设置',
+        path: '/account/setting',
+        component: './User/UserSetting',
       },
     ],
   },

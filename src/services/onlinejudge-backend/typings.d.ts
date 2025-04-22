@@ -106,6 +106,9 @@ declare namespace API {
     userRole?: string;
     username?: string;
     userEmail?: string;
+    signature?: string;
+    telephone?: string;
+    address?: string;
     userPic?: string;
     description?: string;
     createTime?: string;
@@ -301,6 +304,9 @@ declare namespace API {
     userRole?: string;
     username?: string;
     userEmail?: string;
+    signature?: string;
+    telephone?: string;
+    address?: string;
     userPic?: string;
     description?: string;
     createTime?: string;
@@ -312,7 +318,8 @@ declare namespace API {
     userAccount?: string;
     username?: string;
     userEmail?: string;
-    description?: string;
+    telephone?: string;
+    address?: string;
     userRole?: string;
   };
 
@@ -320,8 +327,9 @@ declare namespace API {
     id?: number;
     userAccount?: string;
     username?: string;
+    telephone?: string;
+    address?: string;
     userEmail?: string;
-    description?: string;
     userRole?: string;
   };
 
@@ -339,6 +347,7 @@ declare namespace API {
     userAccount?: string;
     userRole?: string;
     username?: string;
+    telephone?: string;
   };
 
   type UserRegisterRequest = {
@@ -347,11 +356,6 @@ declare namespace API {
     checkPassword: string;
     username: string;
     userEmail: string;
-  };
-
-  type UserRoleUpdateRequest = {
-    userAccount: string;
-    newUserRole: string;
   };
 
   type UserUpdateAvatarRequest = {
@@ -363,6 +367,10 @@ declare namespace API {
     id?: number;
     username: string;
     userEmail: string;
+    signature?: string;
+    telephone?: string;
+    address?: string;
+    description?: string;
   };
 
   type UserUpdatePwdRequest = {
@@ -377,6 +385,9 @@ declare namespace API {
     userAccount?: string;
     username?: string;
     userEmail?: string;
+    signature?: string;
+    telephone?: string;
+    address?: string;
     userRole?: string;
     userPic?: string;
     description?: string;

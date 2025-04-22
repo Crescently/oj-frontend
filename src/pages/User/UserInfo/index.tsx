@@ -1,28 +1,160 @@
-import React from 'react';
-import { useModel } from '@@/exports';
-import { Descriptions, DescriptionsProps } from 'antd';
+import { HomeOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
+import { GridContent } from '@ant-design/pro-components';
+import { history } from '@umijs/max';
+import { Avatar, Card, Col, Descriptions, Divider, message, Row, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import useStyles from './UserInfo.style';
+import { getUserInfo } from '@/services/onlinejudge-backend/userController';
+
+export type tabKeyType = 'history' | 'favourites';
 
 const UserInfo: React.FC = () => {
-  const { initialState } = useModel('@@initialState');
-  const loginUser = initialState?.currentUser;
-  const items: DescriptionsProps['items'] = [
+  const { styles } = useStyles();
+  const [tabKey, setTabKey] = useState<tabKeyType>('history');
+  const [currentUser, setCurrentUser] = useState<API.UserVO>({});
+
+  const getCurrentUser = async () => {
+    const res = await getUserInfo();
+    if (res.code === 0 && res.data) {
+      setCurrentUser(res.data);
+    } else {
+      history.push('/user/login');
+      message.error(res.msg);
+    }
+  };
+  useEffect(() => {
+    getCurrentUser().then(() => {});
+  }, []);
+
+  //  渲染用户信息
+  const renderUserInfo = ({ userAccount, telephone, address }: Partial<API.UserVO>) => {
+    return (
+      <div className={styles.detail}>
+        <p>
+          <UserOutlined
+            style={{
+              marginRight: 8,
+            }}
+          />
+          账号：{userAccount}
+        </p>
+        <p>
+          <PhoneOutlined
+            style={{
+              marginRight: 8,
+            }}
+          />
+          联系方式：{telephone}
+        </p>
+        <p>
+          <HomeOutlined
+            style={{
+              marginRight: 8,
+            }}
+          />
+          {address}
+        </p>
+      </div>
+    );
+  };
+
+  const operationTabList = [
     {
-      key: '1',
-      label: '账号',
-      children: loginUser?.userAccount,
+      key: 'history',
+      tab: (
+        <span>
+          历史题目{' '}
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          ></span>
+        </span>
+      ),
     },
     {
-      key: '2',
-      label: '用户名',
-      children: loginUser?.username,
-      span: 2,
+      key: 'favourites',
+      tab: (
+        <span>
+          我的收藏{' '}
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          ></span>
+        </span>
+      ),
     },
   ];
 
+  // 渲染tab切换
+  const renderChildrenByTabKey = (tabValue: tabKeyType) => {
+    if (tabValue === 'history') {
+      return <> 历史</>;
+    }
+    if (tabValue === 'favourites') {
+      return <> 收藏</>;
+    }
+    return null;
+  };
+
   return (
-    <>
-      <Descriptions title="User Info" bordered items={items} />
-    </>
+    <GridContent>
+      <Row gutter={24}>
+        <Col lg={7} md={24}>
+          <Card
+            variant={'outlined'}
+            style={{
+              marginBottom: 24,
+            }}
+          >
+            {currentUser && (
+              <div>
+                <div className={styles.avatarHolder}>
+                  <Space>
+                    {currentUser.userPic ? (
+                      <Avatar
+                        style={{ width: '104px', height: '104px', marginBottom: '20px' }}
+                        size={'large'}
+                        src={currentUser.userPic}
+                      />
+                    ) : (
+                      <Avatar
+                        style={{ width: '104px', height: '104px', marginBottom: '20px' }}
+                        size={'large'}
+                        icon={<UserOutlined />}
+                      />
+                    )}
+                  </Space>
+                  <div className={styles.name}>{currentUser?.username}</div>
+                  <div>{currentUser?.signature}</div>
+                </div>
+                {renderUserInfo(currentUser)}
+                <Divider dashed />
+                <Descriptions title={'个人简介'} column={1}>
+                  <Descriptions.Item> {currentUser?.description}</Descriptions.Item>
+                </Descriptions>
+                <Divider dashed />
+                {/*  todo 用户签到情况显示区域（如果有时间）*/}
+              </div>
+            )}
+          </Card>
+        </Col>
+        <Col lg={17} md={24}>
+          <Card
+            className={styles.tabsCard}
+            variant={'borderless'}
+            tabList={operationTabList}
+            activeTabKey={tabKey}
+            onTabChange={(_tabKey: string) => {
+              setTabKey(_tabKey as tabKeyType);
+            }}
+          >
+            {renderChildrenByTabKey(tabKey)}
+          </Card>
+        </Col>
+      </Row>
+    </GridContent>
   );
 };
 export default UserInfo;

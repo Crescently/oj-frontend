@@ -1,7 +1,7 @@
 /**
  * @see https://umijs.org/docs/max/access#access
  * */
-export default function access(initialState: { currentUser?: API.UserLoginResponse } | undefined) {
+export default function access(initialState: { currentUser?: API.UserVO } | undefined) {
   const { currentUser } = initialState ?? {};
   return {
     canUser: currentUser,

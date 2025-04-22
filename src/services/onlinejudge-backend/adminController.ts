@@ -52,18 +52,3 @@ export async function updateUser(
     ...(options || {}),
   });
 }
-
-/** 此处后端没有提供注释 PUT /admin/update/role */
-export async function updateUserRole(
-  body: API.UserRoleUpdateRequest,
-  options?: { [key: string]: any },
-) {
-  return request<API.BaseResponse>('/admin/update/role', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
-  });
-}

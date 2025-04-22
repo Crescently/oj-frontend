@@ -67,10 +67,16 @@ const UserManagePage: React.FC = () => {
       valueType: 'text',
       hideInSearch: true,
     },
+
     {
-      title: '用户简介',
-      dataIndex: 'description',
-      valueType: 'textarea',
+      title: '联系电话',
+      dataIndex: 'telephone',
+      valueType: 'text',
+    },
+    {
+      title: '住址',
+      dataIndex: 'address',
+      valueType: 'text',
       hideInSearch: true,
     },
     {
@@ -94,14 +100,7 @@ const UserManagePage: React.FC = () => {
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      valueType: 'text',
-      hideInSearch: true,
-      hideInForm: true,
-    },
-    {
-      title: '修改时间',
-      dataIndex: 'updateTime',
-      valueType: 'text',
+      valueType: 'date',
       hideInSearch: true,
       hideInForm: true,
     },
