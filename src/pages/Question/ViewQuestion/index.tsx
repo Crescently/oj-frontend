@@ -70,6 +70,18 @@ const ViewQuestion = () => {
       hideInSearch: true,
     },
     {
+      title: '点赞数',
+      dataIndex: 'thumbNum',
+      valueType: 'text',
+      hideInSearch: true,
+    },
+    {
+      title: '收藏数',
+      dataIndex: 'favourNum',
+      valueType: 'text',
+      hideInSearch: true,
+    },
+    {
       title: '创建时间',
       dataIndex: 'createTime',
       valueType: 'date',

@@ -20,7 +20,17 @@ import { CodeEditor } from '@/components';
 import { FormProps } from 'antd/lib';
 import { doQuestionSubmit } from '@/services/onlinejudge-backend/questionSubmitController';
 import MdViewer from '@/components/MdViewer';
-import { ClockCircleOutlined, DatabaseOutlined, DeploymentUnitOutlined } from '@ant-design/icons';
+import {
+  ClockCircleOutlined,
+  DatabaseOutlined,
+  DeploymentUnitOutlined,
+  LikeFilled,
+  LikeOutlined,
+  StarFilled,
+  StarOutlined,
+} from '@ant-design/icons';
+import { doThumb } from '@/services/onlinejudge-backend/questionThumbController';
+import { doQuestionFavour } from '@/services/onlinejudge-backend/questionFavourController';
 
 const SubmitQuestion = () => {
   const params = useParams();
@@ -48,6 +58,45 @@ const SubmitQuestion = () => {
       message.success('成功');
     } else {
       message.error(res.msg);
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      const newLikedStatus = !data.thumb;
+      const updatedLikesCount = data.thumb ? data.thumbNum! - 1 : data.thumbNum! + 1;
+
+      // 假设请求点赞接口
+      await doThumb({ questionId: data.id });
+      setData({
+        ...data,
+        thumb: newLikedStatus,
+        thumbNum: updatedLikesCount,
+      });
+      message.success(newLikedStatus ? '点赞成功' : '取消点赞');
+    } catch (error) {
+      console.error('点赞失败:', error);
+      message.error('点赞失败');
+    }
+  };
+
+  // 模拟收藏操作
+  const handleStar = async () => {
+    try {
+      const newStarredStatus = !data.favour;
+      const updatedStarsCount = data.favour ? data.favourNum! - 1 : data.favourNum! + 1;
+
+      // 假设请求收藏接口
+      await doQuestionFavour({ questionId: data.id });
+      setData({
+        ...data,
+        favour: newStarredStatus,
+        favourNum: updatedStarsCount,
+      });
+      message.success(newStarredStatus ? '收藏成功' : '取消收藏');
+    } catch (error) {
+      console.error('收藏失败:', error);
+      message.error('收藏失败');
     }
   };
 
@@ -96,6 +145,23 @@ const SubmitQuestion = () => {
                   </Flex>
                 </Descriptions.Item>
               </Descriptions>
+              <Space style={{ marginTop: 16 }} direction="horizontal">
+                <Button
+                  icon={data.thumb ? <LikeFilled /> : <LikeOutlined />}
+                  type={data.thumb ? 'primary' : 'default'}
+                  onClick={handleLike}
+                  style={{ marginRight: '10px' }}
+                >
+                  {data.thumbNum} 点赞
+                </Button>
+                <Button
+                  icon={data.favour ? <StarFilled /> : <StarOutlined />}
+                  type={data.favour ? 'primary' : 'default'}
+                  onClick={handleStar}
+                >
+                  {data.favourNum} 收藏
+                </Button>
+              </Space>
             </Tabs.TabPane>
             <Tabs.TabPane tab="评论" key="2"></Tabs.TabPane>
             <Tabs.TabPane tab="答案" key="3"></Tabs.TabPane>

@@ -11,6 +11,12 @@ declare namespace API {
     data?: boolean;
   };
 
+  type BaseResponseInteger = {
+    code?: number;
+    msg?: string;
+    data?: number;
+  };
+
   type BaseResponseLoginUserVO = {
     code?: number;
     msg?: string;
@@ -227,6 +233,10 @@ declare namespace API {
     judgeConfig?: JudgeConfig;
   };
 
+  type QuestionFavourAddRequest = {
+    questionId?: number;
+  };
+
   type QuestionQueryRequest = {
     current?: number;
     pageSize?: number;
@@ -271,6 +281,10 @@ declare namespace API {
     questionVO?: QuestionVO;
   };
 
+  type QuestionThumbAddRequest = {
+    questionId?: number;
+  };
+
   type QuestionUpdateRequest = {
     id?: number;
     title?: string;
@@ -295,6 +309,8 @@ declare namespace API {
     userVO?: UserVO;
     createTime?: string;
     updateTime?: string;
+    thumb?: boolean;
+    favour?: boolean;
   };
 
   type User = {
