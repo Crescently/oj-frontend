@@ -17,6 +17,12 @@ declare namespace API {
     data?: number;
   };
 
+  type BaseResponseListCommentVO = {
+    code?: number;
+    msg?: string;
+    data?: CommentVO[];
+  };
+
   type BaseResponseLoginUserVO = {
     code?: number;
     msg?: string;
@@ -75,6 +81,22 @@ declare namespace API {
     code?: number;
     msg?: string;
     data?: UserVO;
+  };
+
+  type CommentAddRequest = {
+    content?: string;
+    questionId?: number;
+  };
+
+  type CommentQueryRequest = {
+    questionId?: number;
+  };
+
+  type CommentVO = {
+    id?: number;
+    userVO?: UserVO;
+    content?: string;
+    createTime?: string;
   };
 
   type DeleteRequest = {
@@ -309,8 +331,8 @@ declare namespace API {
     userVO?: UserVO;
     createTime?: string;
     updateTime?: string;
-    thumb?: boolean;
     favour?: boolean;
+    thumb?: boolean;
   };
 
   type User = {

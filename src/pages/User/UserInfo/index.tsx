@@ -5,6 +5,8 @@ import { Avatar, Card, Col, Descriptions, Divider, message, Row, Space } from 'a
 import React, { useEffect, useState } from 'react';
 import useStyles from './UserInfo.style';
 import { getUserInfo } from '@/services/onlinejudge-backend/userController';
+import { listMyFavourQuestionByPage } from '@/services/onlinejudge-backend/questionFavourController';
+import QuestionList from '@/pages/User/UserInfo/components/QuestionList';
 
 export type tabKeyType = 'history' | 'favourites';
 
@@ -12,6 +14,7 @@ const UserInfo: React.FC = () => {
   const { styles } = useStyles();
   const [tabKey, setTabKey] = useState<tabKeyType>('history');
   const [currentUser, setCurrentUser] = useState<API.UserVO>({});
+  const [myFavourList, setMyFavourList] = useState<API.QuestionVO[]>([]);
 
   const getCurrentUser = async () => {
     const res = await getUserInfo();
@@ -22,8 +25,19 @@ const UserInfo: React.FC = () => {
       message.error(res.msg);
     }
   };
+
+  const getMyFavourList = async () => {
+    const res = await listMyFavourQuestionByPage({});
+    if (res.code === 0 && res.data?.records) {
+      setMyFavourList(res.data.records);
+    } else {
+      message.error(res.msg);
+    }
+  };
+
   useEffect(() => {
-    getCurrentUser().then(() => {});
+    getCurrentUser().then();
+    getMyFavourList().then();
   }, []);
 
   //  渲染用户信息
@@ -93,7 +107,7 @@ const UserInfo: React.FC = () => {
       return <> 历史</>;
     }
     if (tabValue === 'favourites') {
-      return <> 收藏</>;
+      return <QuestionList questionList={myFavourList} />;
     }
     return null;
   };

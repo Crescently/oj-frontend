@@ -31,14 +31,12 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ value, language = 'java', onChange }) => {
-  // 移除内部状态管理，直接使用父组件传递的 language
   const [editorInstance, setEditorInstance] = useState<editor.IStandaloneCodeEditor>();
 
   const handleEditorDidMount: OnMount = (editor) => {
     setEditorInstance(editor);
   };
-
-  // 添加语言同步逻辑
+  // 语言同步
   useEffect(() => {
     if (editorInstance && language) {
       const model = editorInstance.getModel();

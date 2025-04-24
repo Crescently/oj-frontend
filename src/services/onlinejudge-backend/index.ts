@@ -9,6 +9,7 @@ import * as questionThumbController from './questionThumbController';
 import * as questionSubmitController from './questionSubmitController';
 import * as questionFavourController from './questionFavourController';
 import * as questionController from './questionController';
+import * as commentController from './commentController';
 export default {
   userController,
   adminController,
@@ -17,4 +18,5 @@ export default {
   questionSubmitController,
   questionFavourController,
   questionController,
+  commentController,
 };

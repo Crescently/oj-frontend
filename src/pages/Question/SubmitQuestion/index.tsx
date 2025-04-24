@@ -31,6 +31,7 @@ import {
 } from '@ant-design/icons';
 import { doThumb } from '@/services/onlinejudge-backend/questionThumbController';
 import { doQuestionFavour } from '@/services/onlinejudge-backend/questionFavourController';
+import CommentPage from '@/pages/Question/SubmitQuestion/CommentPage';
 
 const SubmitQuestion = () => {
   const params = useParams();
@@ -163,7 +164,9 @@ const SubmitQuestion = () => {
                 </Button>
               </Space>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="评论" key="2"></Tabs.TabPane>
+            <Tabs.TabPane tab="评论" key="2">
+              <CommentPage questionId={data.id as number} />
+            </Tabs.TabPane>
             <Tabs.TabPane tab="答案" key="3"></Tabs.TabPane>
           </Tabs>
         </Splitter.Panel>
@@ -183,21 +186,24 @@ const SubmitQuestion = () => {
               language: 'java',
             }}
           >
-            <Form.Item<API.QuestionSubmitAddRequest> name="language">
-              <Select
-                style={{ width: '30%', marginTop: 5 }}
-                showSearch
-                placeholder="选择语言"
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                options={[
-                  { value: 'java', label: 'Java' },
-                  { value: 'cpp', label: 'C++' },
-                  { value: 'python', label: 'Python' },
-                ]}
-              />
-            </Form.Item>
+            <Space direction={'horizontal'} align={'baseline'}>
+              <Typography.Text>编程语言 </Typography.Text>
+              <Form.Item<API.QuestionSubmitAddRequest> name="language">
+                <Select
+                  style={{ minWidth: '250px', marginTop: 5 }}
+                  showSearch
+                  placeholder="选择语言"
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={[
+                    { value: 'java', label: 'Java' },
+                    { value: 'cpp', label: 'C++' },
+                    { value: 'python', label: 'Python' },
+                  ]}
+                />
+              </Form.Item>
+            </Space>
 
             <Form.Item<API.QuestionSubmitAddRequest> name="code">
               <CodeEditor language={selectedLanguage || 'java'} />
