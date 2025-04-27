@@ -3,13 +3,18 @@ import useStyles from './index.style';
 import { LikeOutlined, StarTwoTone } from '@ant-design/icons';
 import React from 'react';
 import dayjs from 'dayjs';
+import { history } from '@umijs/max';
 
 interface Props {
   questionList: API.QuestionVO[];
+  pageParams: PageParams;
+  onChange: (current: number, pageSize: number) => void;
+  total: number;
 }
 
-const QuestionList: React.FC<Props> = ({ questionList }) => {
+const QuestionList: React.FC<Props> = ({ questionList, onChange, pageParams, total }) => {
   const { styles } = useStyles();
+
   const IconText: React.FC<{
     icon: React.ReactNode;
     text: React.ReactNode;
@@ -26,10 +31,22 @@ const QuestionList: React.FC<Props> = ({ questionList }) => {
         className={styles.questionList}
         rowKey="id"
         itemLayout="vertical"
+        split={true}
+        pagination={{
+          position: 'bottom',
+          align: 'end',
+          current: pageParams.current,
+          pageSize: pageParams.pageSize,
+          total: total,
+          onChange: onChange,
+        }}
         dataSource={questionList || []}
         renderItem={(item) => (
           <List.Item
             key={item.id}
+            onClick={() => {
+              history.push(`/submit/question/${item.id}`);
+            }}
             actions={[
               <IconText key="star" icon={<StarTwoTone />} text={item.favourNum} />,
               <IconText key="like" icon={<LikeOutlined />} text={item.thumbNum} />,

@@ -17,12 +17,6 @@ declare namespace API {
     data?: number;
   };
 
-  type BaseResponseListCommentVO = {
-    code?: number;
-    msg?: string;
-    data?: CommentVO[];
-  };
-
   type BaseResponseLoginUserVO = {
     code?: number;
     msg?: string;
@@ -33,6 +27,12 @@ declare namespace API {
     code?: number;
     msg?: string;
     data?: number;
+  };
+
+  type BaseResponsePageCommentVO = {
+    code?: number;
+    msg?: string;
+    data?: PageCommentVO;
   };
 
   type BaseResponsePageQuestion = {
@@ -89,6 +89,10 @@ declare namespace API {
   };
 
   type CommentQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
     questionId?: number;
   };
 
@@ -146,6 +150,20 @@ declare namespace API {
   type OrderItem = {
     column?: string;
     asc?: boolean;
+  };
+
+  type PageCommentVO = {
+    records?: CommentVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: boolean;
+    searchCount?: boolean;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
   };
 
   type PageQuestion = {

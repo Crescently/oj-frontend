@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { addComment, listCommentById } from '@/services/onlinejudge-backend/commentController';
-import { Avatar, Button, Col, Divider, Flex, Input, List, message, Row, Typography } from 'antd';
+import { addComment, listCommentVoByPage } from '@/services/onlinejudge-backend/commentController';
+import {
+  Avatar,
+  Button,
+  Col,
+  Divider,
+  Flex,
+  Input,
+  List,
+  message,
+  PaginationProps,
+  Row,
+  Typography,
+} from 'antd';
 import moment from 'moment';
 import { UserOutlined } from '@ant-design/icons';
 
@@ -9,110 +21,138 @@ interface Props {
 }
 
 const CommentPage: React.FC<Props> = ({ questionId }) => {
-  const [comments, setComments] = useState<API.CommentVO[]>([]);
+  const [data, setData] = useState<API.PageCommentVO>({});
+  const [pageParams, setPageParams] = useState<PageParams>({
+    current: 1,
+    pageSize: 10,
+  });
+  const [newComment, setNewComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const getComment = async () => {
-    const res = await listCommentById({ questionId: questionId });
-    if (res.code === 0) {
-      setComments(res?.data ?? []);
+  const loadData = async (pageParams: PageParams) => {
+    try {
+      const res = await listCommentVoByPage({ questionId, ...pageParams });
+      if (res.code === 0 && res.data) {
+        setData(res.data);
+      } else {
+        message.error(res.msg || '加载评论失败');
+      }
+    } catch (error) {
+      message.error('加载评论失败，请稍后重试');
     }
   };
+
+  // 当questionId变化时，重置到第一页
   useEffect(() => {
-    getComment().then();
-  }, []);
+    setPageParams((prev) => ({ current: 1, pageSize: prev.pageSize }));
+  }, [questionId]);
 
-  const [newComment, setNewComment] = useState('');
+  // 加载数据
+  useEffect(() => {
+    loadData(pageParams).then();
+  }, [pageParams, questionId]);
 
-  const handleCommentChange = (e: any) => {
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment(e.target.value);
   };
 
   const handleCommentSubmit = async () => {
-    const res = await addComment({
-      questionId: questionId,
-      content: newComment.trim(),
-    });
-    if (res.code === 0) {
-      message.success('评论成功');
-      getComment().then();
-      setNewComment('');
+    if (!newComment.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await addComment({
+        questionId,
+        content: newComment.trim(),
+      });
+      if (res.code === 0) {
+        message.success('评论成功');
+        setNewComment('');
+        // 提交成功后重置到第一页
+        setPageParams((prev) => ({ current: 1, pageSize: prev.pageSize }));
+      } else {
+        message.error(res.msg || '评论失败');
+      }
+    } catch (error) {
+      message.error('请求失败，请稍后重试');
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  const formatTime = (time: any) => {
-    return moment(time).fromNow(); // 转化为“XX时间前”
+
+  const formatTime = (time: any) => moment(time).fromNow();
+
+  const onChange: PaginationProps['onChange'] = (current, pageSize) => {
+    setPageParams({ current, pageSize });
   };
+
   return (
-    <>
-      <div>
-        <Flex style={{ marginTop: 20, marginRight: 20 }} justify={'flex-end'} vertical={true}>
-          <Input.TextArea
-            value={newComment}
-            onChange={handleCommentChange}
-            rows={4}
-            placeholder="发表你的评论"
-          />
-          <Button
-            type="primary"
-            style={{ marginTop: 10, marginLeft: 'auto' }}
-            onClick={handleCommentSubmit}
-            disabled={!newComment.trim()}
-          >
-            评论
-          </Button>
-        </Flex>
-        <Divider dashed />
-        <List
-          itemLayout="horizontal"
-          dataSource={comments}
-          renderItem={(comment) => (
-            <div>
-              <List.Item
-                style={{
-                  marginBottom: '20px',
-                  padding: '10px',
-                  border: '1px solid #f0f0f0',
-                  borderRadius: '8px',
-                }}
-              >
-                <div style={{ minWidth: 800 }}>
-                  <Row>
-                    <Col span={2}>
-                      {comment.userVO?.userPic ? (
-                        <Avatar size={'large'} src={comment.userVO?.userPic} />
-                      ) : (
-                        <Avatar size={'large'} icon={<UserOutlined />} />
-                      )}
-                    </Col>
-                    <Col span={20}>
-                      <Row>
-                        <Col span={24}>
-                          <Typography.Text>{comment.userVO?.username}</Typography.Text>
-                          <Typography.Text
-                            type="secondary"
-                            style={{ marginLeft: '10px', fontSize: '12px' }}
-                          >
-                            {formatTime(comment.createTime)}
-                          </Typography.Text>
-                        </Col>
-                        <Col span={24} style={{ marginTop: '10px' }}>
-                          <Typography.Paragraph
-                            copyable={{ icon: <span style={{ marginLeft: 16 }}>复制评论</span> }}
-                            style={{ fontSize: '14px' }}
-                          >
-                            {comment.content}
-                          </Typography.Paragraph>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </div>
-              </List.Item>
-              <Divider style={{ color: 'blue' }} />
-            </div>
-          )}
+    <div>
+      <Flex style={{ marginTop: 20, marginRight: 20 }} vertical gap="middle">
+        <Input.TextArea
+          value={newComment}
+          onChange={handleCommentChange}
+          rows={4}
+          placeholder="发表你的评论"
+          disabled={isSubmitting}
         />
-      </div>
-    </>
+        <Button
+          type="primary"
+          onClick={handleCommentSubmit}
+          disabled={!newComment.trim() || isSubmitting}
+          loading={isSubmitting}
+          style={{ alignSelf: 'flex-end' }}
+        >
+          评论
+        </Button>
+      </Flex>
+      <Divider dashed />
+      <List
+        itemLayout="horizontal"
+        dataSource={data.records}
+        split
+        pagination={{
+          position: 'bottom',
+          align: 'end',
+          current: pageParams.current,
+          pageSize: pageParams.pageSize,
+          total: data.total,
+          onChange,
+        }}
+        renderItem={(comment) => (
+          <List.Item
+            style={{
+              marginBottom: '20px',
+              padding: '10px',
+              border: '1px solid #f0f0f0',
+              borderRadius: '8px',
+            }}
+          >
+            <Row gutter={16} style={{ width: '100%' }}>
+              <Col flex="none">
+                {comment.userVO?.userPic ? (
+                  <Avatar size={40} src={comment.userVO.userPic} />
+                ) : (
+                  <Avatar size={40} icon={<UserOutlined />} />
+                )}
+              </Col>
+              <Col flex="auto">
+                <Typography.Text strong>{comment.userVO?.username}</Typography.Text>
+                <Typography.Text type="secondary" style={{ marginLeft: 8, fontSize: 12 }}>
+                  {formatTime(comment.createTime)}
+                </Typography.Text>
+                <Typography.Paragraph
+                  style={{ marginTop: 8, marginBottom: 0 }}
+                  copyable={{ text: comment.content }}
+                >
+                  {comment.content}
+                </Typography.Paragraph>
+              </Col>
+            </Row>
+          </List.Item>
+        )}
+      />
+    </div>
   );
 };
 

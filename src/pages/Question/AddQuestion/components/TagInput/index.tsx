@@ -50,20 +50,21 @@ const TagInput: FC<TagInputProps> = ({ value = [], onChange }) => {
         display: 'flex',
         flexWrap: 'wrap',
         gap: 8,
-        alignItems: 'center', // 新增关键属性
+        alignItems: 'center',
       }}
     >
       {value.map((tag) => (
         <Tag
           closable
           key={tag}
+          color={'green'}
           onClose={() => handleTagClose(tag)}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             padding: '0 12px',
-            minHeight: '32px',
+            minHeight: '16px',
             borderRadius: '4px',
             margin: '4px 8px 4px 0',
             fontSize: '14px',
@@ -89,7 +90,7 @@ const TagInput: FC<TagInputProps> = ({ value = [], onChange }) => {
           icon={<PlusOutlined />}
           onClick={handleAddClick}
           style={{
-            height: 32, // 与标签高度保持一致
+            height: 30,
             display: 'inline-flex',
             alignItems: 'center',
           }}

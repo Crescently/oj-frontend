@@ -14,12 +14,12 @@ export async function addComment(body: API.CommentAddRequest, options?: { [key: 
   });
 }
 
-/** 此处后端没有提供注释 POST /comment/list */
-export async function listCommentById(
+/** 此处后端没有提供注释 POST /comment/list/page/vo */
+export async function listCommentVoByPage(
   body: API.CommentQueryRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseListCommentVO>('/comment/list', {
+  return request<API.BaseResponsePageCommentVO>('/comment/list/page/vo', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

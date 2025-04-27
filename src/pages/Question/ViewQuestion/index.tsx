@@ -120,24 +120,18 @@ const ViewQuestion = () => {
         }}
         params={questionParams}
         onSubmit={(params) => {
-          const { title, content, tags } = params;
+          const { title, tags } = params;
           setQuestionParams((prevState) => {
             return {
               ...prevState,
               title: title || '',
-              content: content || '',
               tags: tags || ([] as string[]),
             };
           });
           actionRef.current?.reload();
         }}
         request={async (params) => {
-          const newParams = {
-            ...params,
-            current: 1,
-            pageSize: 10,
-          };
-          const res = await listQuestionVoByPage(newParams);
+          const res = await listQuestionVoByPage(params);
           if (res.data) {
             return {
               data: res.data.records,

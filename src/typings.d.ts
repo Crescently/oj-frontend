@@ -22,3 +22,8 @@ declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 declare interface initialState {
   currentUser?: API.UserVO;
 }
+
+declare interface PageParams {
+  current?: number;
+  pageSize?: number;
+}

@@ -9,10 +9,10 @@ import { ClockCircleOutlined, DatabaseOutlined, DeploymentUnitOutlined } from '@
 import Typography from 'antd/lib/typography';
 import './index.css';
 import { history } from '@umijs/max';
+import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
 
 interface questionParams {
   title?: string;
-  content?: string;
   tags?: string[];
 }
 
@@ -24,7 +24,6 @@ const QuestionManage = () => {
   const actionRef = useRef<ActionType>();
   const [questionParams, setQuestionParams] = useState<questionParams>({
     title: '',
-    content: '',
     tags: [],
   });
 
@@ -69,11 +68,6 @@ const QuestionManage = () => {
       valueType: 'text',
     },
     {
-      title: '内容',
-      dataIndex: 'content',
-      valueType: 'text',
-    },
-    {
       title: '标签',
       dataIndex: 'tags',
       render: (_, record) => {
@@ -87,7 +81,7 @@ const QuestionManage = () => {
           return (
             <Space size={4}>
               {tags.map((tag, index) => (
-                <Tag key={index} style={{ margin: '2px 4px 2px 0' }}>
+                <Tag key={index} color={'green'} style={{ margin: '2px 4px 2px 0' }}>
                   {tag.trim()}
                 </Tag>
               ))}
@@ -96,7 +90,9 @@ const QuestionManage = () => {
         }
         return null;
       },
-      hideInSearch: true,
+      renderFormItem: () => {
+        return <TagInput />;
+      },
     },
     {
       title: '通过数',
@@ -221,24 +217,18 @@ const QuestionManage = () => {
         }}
         params={questionParams}
         onSubmit={(params) => {
-          const { title, content, tags } = params;
+          const { title, tags } = params;
           setQuestionParams((prevState) => {
             return {
               ...prevState,
               title: title || '',
-              content: content || '',
               tags: tags || ([] as string[]),
             };
           });
           actionRef.current?.reload();
         }}
         request={async (params) => {
-          const newParams = {
-            ...params,
-            current: 1,
-            pageSize: 10,
-          };
-          const res = await listQuestionByPage(newParams);
+          const res = await listQuestionByPage(params);
           if (res.data) {
             return {
               data: res.data.records,

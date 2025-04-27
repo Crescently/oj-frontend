@@ -28,7 +28,8 @@ const ChangePwd: React.FC = () => {
       ...value,
     });
     if (res.code === 0) {
-      message.success('更新密码成功');
+      message.success('更新密码成功，请重新登录');
+      history.push('/user/login');
     } else {
       message.error('更新失败' + res.msg);
     }

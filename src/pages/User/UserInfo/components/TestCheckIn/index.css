@@ -1,0 +1,15 @@
+/* calendar.css */
+
+.normal-cell {
+  border-radius: 8px;
+}
+
+.checked-cell {
+  background-color: #52c41a;
+  color: #fff;
+  border-radius: 8px;
+}
+
+.custom-calendar .ant-picker-cell {
+  padding: 0 !important;
+}

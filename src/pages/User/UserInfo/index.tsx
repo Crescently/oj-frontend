@@ -1,12 +1,24 @@
 import { HomeOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
-import { Avatar, Card, Col, Descriptions, Divider, message, Row, Space } from 'antd';
+import {
+  Avatar,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
+  message,
+  PaginationProps,
+  Row,
+  Space,
+} from 'antd';
 import React, { useEffect, useState } from 'react';
 import useStyles from './UserInfo.style';
 import { getUserInfo } from '@/services/onlinejudge-backend/userController';
 import { listMyFavourQuestionByPage } from '@/services/onlinejudge-backend/questionFavourController';
 import QuestionList from '@/pages/User/UserInfo/components/QuestionList';
+import { listMyQuestionVoByPage } from '@/services/onlinejudge-backend/questionController';
+import CheckInCalendar from '@/pages/User/UserInfo/components/TestCheckIn';
 
 export type tabKeyType = 'history' | 'favourites';
 
@@ -14,7 +26,8 @@ const UserInfo: React.FC = () => {
   const { styles } = useStyles();
   const [tabKey, setTabKey] = useState<tabKeyType>('history');
   const [currentUser, setCurrentUser] = useState<API.UserVO>({});
-  const [myFavourList, setMyFavourList] = useState<API.QuestionVO[]>([]);
+  const [myFavourList, setMyFavourList] = useState<API.PageQuestionVO>({});
+  const [myHistoryList, setMyHistoryList] = useState<API.PageQuestionVO>({});
 
   const getCurrentUser = async () => {
     const res = await getUserInfo();
@@ -26,10 +39,31 @@ const UserInfo: React.FC = () => {
     }
   };
 
+  const [pageParams, setPageParams] = useState<PageParams>({
+    current: 1,
+    pageSize: 5,
+  });
+
+  const onChange: PaginationProps['onChange'] = (current, pageSize) => {
+    setPageParams({
+      current,
+      pageSize,
+    });
+  };
+
   const getMyFavourList = async () => {
-    const res = await listMyFavourQuestionByPage({});
-    if (res.code === 0 && res.data?.records) {
-      setMyFavourList(res.data.records);
+    const res = await listMyFavourQuestionByPage({ ...pageParams });
+    if (res.code === 0 && res.data) {
+      setMyFavourList(res.data);
+    } else {
+      message.error(res.msg);
+    }
+  };
+
+  const getMyHistoryList = async () => {
+    const res = await listMyQuestionVoByPage({ ...pageParams });
+    if (res.code === 0 && res.data) {
+      setMyHistoryList(res.data);
     } else {
       message.error(res.msg);
     }
@@ -38,7 +72,8 @@ const UserInfo: React.FC = () => {
   useEffect(() => {
     getCurrentUser().then();
     getMyFavourList().then();
-  }, []);
+    getMyHistoryList().then();
+  }, [pageParams]);
 
   //  渲染用户信息
   const renderUserInfo = ({ userAccount, telephone, address }: Partial<API.UserVO>) => {
@@ -104,10 +139,24 @@ const UserInfo: React.FC = () => {
   // 渲染tab切换
   const renderChildrenByTabKey = (tabValue: tabKeyType) => {
     if (tabValue === 'history') {
-      return <> 历史</>;
+      return (
+        <QuestionList
+          questionList={myHistoryList.records ?? []}
+          pageParams={pageParams}
+          onChange={onChange}
+          total={myHistoryList.total ?? 0}
+        />
+      );
     }
     if (tabValue === 'favourites') {
-      return <QuestionList questionList={myFavourList} />;
+      return (
+        <QuestionList
+          questionList={myFavourList.records ?? []}
+          pageParams={pageParams}
+          onChange={onChange}
+          total={myFavourList.total ?? 0}
+        />
+      );
     }
     return null;
   };
@@ -150,6 +199,7 @@ const UserInfo: React.FC = () => {
                 </Descriptions>
                 <Divider dashed />
                 {/*  todo 用户签到情况显示区域（如果有时间）*/}
+                <CheckInCalendar />
               </div>
             )}
           </Card>

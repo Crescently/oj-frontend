@@ -15,7 +15,9 @@ const Settings: ProLayoutProps & {
   pwa: true,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
-  token: {},
+  token: {
+    // bgLayout: 'white',
+  },
 };
 
 export default Settings;
