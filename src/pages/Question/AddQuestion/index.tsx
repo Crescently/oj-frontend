@@ -5,7 +5,7 @@ import { FormProps } from 'antd/lib';
 import { MdEditor } from '@/components';
 import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { addQuestion } from '@/services/onlinejudge-backend/questionController';
+import { addQuestionUsingPost } from '@/services/onlinejudge-question-service/questionController';
 
 const AddQuestion = () => {
   const [formValue] = useState<API.QuestionAddRequest>({
@@ -28,7 +28,7 @@ const AddQuestion = () => {
 
   const onFinish: FormProps<API.QuestionAddRequest>['onFinish'] = async (values) => {
     console.log('Success:', values);
-    const res = await addQuestion(values);
+    const res = await addQuestionUsingPost(values);
     if (res.code === 0) {
       message.success('添加成功');
     } else {

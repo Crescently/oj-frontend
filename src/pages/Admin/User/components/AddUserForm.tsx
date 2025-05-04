@@ -2,7 +2,7 @@ import '@umijs/max';
 import { message, Modal } from 'antd';
 import React from 'react';
 import { type ProColumns, ProTable } from '@ant-design/pro-components';
-import { addUser } from '@/services/onlinejudge-backend/adminController';
+import { addUserUsingPut } from '@/services/onlinejudge-user-service/adminController';
 
 interface Props {
   visible: boolean;
@@ -17,7 +17,7 @@ const AddUserForm: React.FC<Props> = (props) => {
   const handleAdd = async (fields: API.UserAddRequest) => {
     const hide = message.loading('正在添加');
     try {
-      await addUser({
+      await addUserUsingPut({
         ...fields,
       });
       hide();

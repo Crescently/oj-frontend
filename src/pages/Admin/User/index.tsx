@@ -4,9 +4,12 @@ import { PageContainer, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
 import { Button, message, Space, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
-import { deleteUser, listUserByPage } from '@/services/onlinejudge-backend/adminController';
 import AddUserForm from '@/pages/Admin/User/components/AddUserForm';
 import UpdateUserForm from '@/pages/Admin/User/components/UpdateUserForm';
+import {
+  deleteUserUsingDelete,
+  listUserByPageUsingPost,
+} from '@/services/onlinejudge-user-service/adminController';
 
 const UserManagePage: React.FC = () => {
   const [addUserFormOpen, setAddUserFormOpen] = useState<boolean>(false);
@@ -25,7 +28,7 @@ const UserManagePage: React.FC = () => {
       return true;
     }
     try {
-      await deleteUser({
+      await deleteUserUsingDelete({
         id: row.id,
       });
       hide();
@@ -172,7 +175,7 @@ const UserManagePage: React.FC = () => {
             current: 1,
             pageSize: 10,
           };
-          const res = await listUserByPage(newParams);
+          const res = await listUserByPageUsingPost(newParams);
           if (res.data) {
             return {
               data: res.data.records,

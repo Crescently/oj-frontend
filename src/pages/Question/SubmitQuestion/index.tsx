@@ -1,9 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  getQuestionVoById,
-  listQuestionVoByPage,
-} from '@/services/onlinejudge-backend/questionController';
 import { history, useParams } from '@@/exports';
 import {
   Button,
@@ -24,7 +20,6 @@ import {
 } from 'antd';
 import { CodeEditor } from '@/components';
 import { FormProps } from 'antd/lib';
-import { doQuestionSubmit } from '@/services/onlinejudge-backend/questionSubmitController';
 import MdViewer from '@/components/MdViewer';
 import {
   ClockCircleOutlined,
@@ -35,15 +30,21 @@ import {
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons';
-import { doThumb } from '@/services/onlinejudge-backend/questionThumbController';
-import { doQuestionFavour } from '@/services/onlinejudge-backend/questionFavourController';
 import CommentPage from '@/pages/Question/SubmitQuestion/CommentPage';
+import {
+  doQuestionSubmitUsingPost,
+  getQuestionVoByIdUsingGet,
+  listQuestionVoByPageUsingPost,
+} from '@/services/onlinejudge-question-service/questionController';
+import { doThumbUsingPost } from '@/services/onlinejudge-question-service/questionThumbController';
+import { doQuestionFavourUsingPost } from '@/services/onlinejudge-question-service/questionFavourController';
+import QuestionStatusPage from '@/pages/Question/SubmitQuestion/QuestionStatusPage';
 
 const SubmitQuestion = () => {
   const params = useParams();
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [questionData, setQuestionData] = useState<API.QuestionVO>({});
-  const [questionList, setQuestionList] = useState<API.PageQuestionVO>({});
+  const [questionList, setQuestionList] = useState<API.PageQuestionVO_>({});
   const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
@@ -67,14 +68,14 @@ const SubmitQuestion = () => {
   };
 
   const getQuestionList = async () => {
-    const res = await listQuestionVoByPage(pageParams);
+    const res = await listQuestionVoByPageUsingPost(pageParams);
     if (res.code === 0 && res.data) {
       setQuestionList(res.data);
     }
   };
 
   const loadData = async (params: any) => {
-    const res = await getQuestionVoById(params);
+    const res = await getQuestionVoByIdUsingGet(params);
     if (res.code === 0) {
       setQuestionData(res.data ?? {});
     } else {
@@ -95,7 +96,7 @@ const SubmitQuestion = () => {
               [key: string]: any;
             }
           | undefined,
-      ) => Promise<API.BaseResponseInteger>,
+      ) => Promise<API.BaseResponseInt_>,
       updateFn: (prev: API.QuestionVO) => API.QuestionVO,
     ) => {
       const prevData = { ...questionData };
@@ -115,7 +116,7 @@ const SubmitQuestion = () => {
   );
 
   const onFinish: FormProps<API.QuestionSubmitAddRequest>['onFinish'] = async (values) => {
-    const res = await doQuestionSubmit({
+    const res = await doQuestionSubmitUsingPost({
       ...values,
       questionId: questionData.id,
     });
@@ -127,14 +128,14 @@ const SubmitQuestion = () => {
   };
 
   const handleLike = () =>
-    handleInteraction(doThumb, (prev) => ({
+    handleInteraction(doThumbUsingPost, (prev) => ({
       ...prev,
       thumb: !prev.thumb,
       thumbNum: (prev.thumbNum || 0) + (prev.thumb ? -1 : 1),
     }));
 
   const handleStar = () =>
-    handleInteraction(doQuestionFavour, (prev) => ({
+    handleInteraction(doQuestionFavourUsingPost, (prev) => ({
       ...prev,
       favour: !prev.favour,
       favourNum: (prev.favourNum || 0) + (prev.favour ? -1 : 1),
@@ -258,7 +259,9 @@ const SubmitQuestion = () => {
               <CommentPage questionId={questionData.id as number} />
             </Tabs.TabPane>
             <Tabs.TabPane tab="答案" key="3"></Tabs.TabPane>
-            <Tabs.TabPane tab="提交状态" key="3"></Tabs.TabPane>
+            <Tabs.TabPane tab="提交历史" key="4">
+              <QuestionStatusPage questionId={questionData.id as number} />
+            </Tabs.TabPane>
           </Tabs>
         </Splitter.Panel>
         <Splitter.Panel>

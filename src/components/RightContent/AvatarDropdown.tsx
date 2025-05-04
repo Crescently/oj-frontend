@@ -6,14 +6,14 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
-import { userLogout } from '@/services/onlinejudge-backend/userController';
+import { userLogoutUsingPost } from '@/services/onlinejudge-user-service/userController';
 
 export const AvatarDropdown: React.FC = () => {
   /**
    * 退出登录，并且将当前的 url 保存
    */
   const loginOut = async () => {
-    await userLogout();
+    await userLogoutUsingPost();
     localStorage.clear();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;

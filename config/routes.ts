@@ -25,6 +25,12 @@ export default [
     ],
   },
   {
+    path: '/history/question',
+    name: '提交记录',
+    icon: 'history',
+    component: './Question/QuestionHistory',
+  },
+  {
     path: '/add/question',
     name: '创建题目',
     icon: 'fileAdd',

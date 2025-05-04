@@ -4,8 +4,8 @@ import { Helmet, history } from '@umijs/max';
 import { message } from 'antd';
 import React from 'react';
 import { createStyles } from 'antd-style';
-import { userRegister } from '@/services/onlinejudge-backend/userController';
 import { MyDivider } from '@/components';
+import { userRegisterUsingPost } from '@/services/onlinejudge-user-service/userController';
 
 const useStyles = createStyles(() => {
   return {
@@ -24,7 +24,7 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (values: API.UserRegisterRequest) => {
     // 注册
-    const res = await userRegister(values);
+    const res = await userRegisterUsingPost(values);
     if (res.code === 0) {
       const defaultRegisterSuccessMessage = '注册成功！';
       message.success(defaultRegisterSuccessMessage);

@@ -1,11 +1,9 @@
 ﻿import { history, RequestConfig } from '@umijs/max';
-import { BACKEND_HOST_LOCAL, BACKEND_HOST_PROD } from '@/constants';
+import { BACKEND_HOST_LOCAL } from '@/constants';
 import { message } from 'antd';
 
-const isDev = process.env.NODE_ENV === 'development';
-
 export const requestConfig: RequestConfig = {
-  baseURL: isDev ? BACKEND_HOST_LOCAL : BACKEND_HOST_PROD,
+  baseURL: BACKEND_HOST_LOCAL,
   // 配置携带cookie
   withCredentials: true,
   // 请求拦截器

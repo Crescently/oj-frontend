@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Collapse, message, Space, Tag } from 'antd';
-import {
-  deleteQuestion,
-  listQuestionByPage,
-} from '@/services/onlinejudge-backend/questionController';
+
 import { ClockCircleOutlined, DatabaseOutlined, DeploymentUnitOutlined } from '@ant-design/icons';
 import Typography from 'antd/lib/typography';
 import './index.css';
 import { history } from '@umijs/max';
 import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
+import {
+  deleteQuestionUsingPost,
+  listQuestionByPageUsingPost,
+} from '@/services/onlinejudge-question-service/questionController';
 
 interface questionParams {
   title?: string;
@@ -37,7 +38,7 @@ const QuestionManage = () => {
       return true;
     }
     try {
-      await deleteQuestion({
+      await deleteQuestionUsingPost({
         id: row.id,
       });
       hide();
@@ -228,7 +229,7 @@ const QuestionManage = () => {
           actionRef.current?.reload();
         }}
         request={async (params) => {
-          const res = await listQuestionByPage(params);
+          const res = await listQuestionByPageUsingPost(params);
           if (res.data) {
             return {
               data: res.data.records,

@@ -5,8 +5,11 @@ import { FormProps } from 'antd/lib';
 import { MdEditor } from '@/components';
 import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { getQuestionById, updateQuestion } from '@/services/onlinejudge-backend/questionController';
 import { useParams } from '@@/exports';
+import {
+  getQuestionByIdUsingGet,
+  updateQuestionUsingPost,
+} from '@/services/onlinejudge-question-service/questionController';
 
 const UpdateQuestion = () => {
   const [data, setData] = useState<API.QuestionAdminVO>({
@@ -31,7 +34,7 @@ const UpdateQuestion = () => {
   const [form] = Form.useForm();
 
   const loadData = async (params: any) => {
-    const res = await getQuestionById(params);
+    const res = await getQuestionByIdUsingGet(params);
     if (res.code === 0 && res.data) {
       setData(res.data);
       form.setFieldsValue(res.data);
@@ -46,7 +49,7 @@ const UpdateQuestion = () => {
 
   const onFinish: FormProps<API.QuestionUpdateRequest>['onFinish'] = async (values) => {
     console.log('Success:', values);
-    const res = await updateQuestion({ id: data.id, ...values });
+    const res = await updateQuestionUsingPost({ id: data.id, ...values });
     if (res.code === 0) {
       message.success('修改成功');
     } else {

@@ -1,8 +1,8 @@
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
-import { updatePassword } from '@/services/onlinejudge-backend/userController';
 import React, { useEffect, useState } from 'react';
 import { history, useModel } from '@@/exports';
+import { updatePasswordUsingPatch } from '@/services/onlinejudge-user-service/userController';
 
 const ChangePwd: React.FC = () => {
   //  获取用户信息
@@ -23,7 +23,7 @@ const ChangePwd: React.FC = () => {
 
   const handleFinish = async (value: API.UserUpdatePwdRequest) => {
     console.log(value);
-    const res = await updatePassword({
+    const res = await updatePasswordUsingPatch({
       userId: currentUser.id,
       ...value,
     });

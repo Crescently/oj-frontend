@@ -1,8 +1,8 @@
 import useStyles from './index.style';
 import { Button, GetProp, message, Upload, UploadProps } from 'antd';
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
-import { updateAvatar } from '@/services/onlinejudge-backend/userController';
 import { useState } from 'react';
+import { updateAvatarUsingPatch } from '@/services/onlinejudge-user-service/userController';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -28,7 +28,7 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
       return;
     }
     if (info.file.status === 'done') {
-      const res = await updateAvatar({ avatarUrl: info.file.response.data });
+      const res = await updateAvatarUsingPatch({ avatarUrl: info.file.response.data });
       if (res.code === 0) {
         message.success('头像更新成功');
       } else {

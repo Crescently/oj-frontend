@@ -1,10 +1,10 @@
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
-import { listQuestionVoByPage } from '@/services/onlinejudge-backend/questionController';
 import React, { useRef, useState } from 'react';
 import { Space, Tag } from 'antd';
 import Typography from 'antd/lib/typography';
 import { history } from '@@/core/history';
 import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
+import { listQuestionVoByPageUsingPost } from '@/services/onlinejudge-question-service/questionController';
 
 interface questionParams {
   title?: string;
@@ -59,7 +59,7 @@ const ViewQuestion = () => {
         return (
           <Space size={4}>
             <Typography.Text>
-              {record.submitNum ? (record.acceptedNum ?? 0) / record.submitNum : '0'}%
+              {(record.submitNum ? (record.acceptedNum ?? 0) / record.submitNum : 0) * 100}%
             </Typography.Text>
             <Typography.Text>
               {record.acceptedNum}/{record.submitNum}
@@ -131,7 +131,7 @@ const ViewQuestion = () => {
           actionRef.current?.reload();
         }}
         request={async (params) => {
-          const res = await listQuestionVoByPage(params);
+          const res = await listQuestionVoByPageUsingPost(params);
           if (res.data) {
             return {
               data: res.data.records,

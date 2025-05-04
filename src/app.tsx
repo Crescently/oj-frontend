@@ -4,9 +4,9 @@ import { history } from '@umijs/max';
 import { requestConfig } from './requestConfig';
 import React from 'react';
 import NoAuth from '@/pages/NoAuth';
-import { getUserInfo } from '@/services/onlinejudge-backend/userController';
 import defaultSettings from '../config/defaultSettings';
 import 'bytemd/dist/index.css';
+import { getUserInfoUsingGet } from '@/services/onlinejudge-user-service/userController';
 
 const loginPath = '/user/login';
 
@@ -17,7 +17,7 @@ export async function getInitialState(): Promise<initialState> {
 
   const { location } = history;
   if (location.pathname !== loginPath) {
-    const res = await getUserInfo();
+    const res = await getUserInfoUsingGet();
     if (res.code === 0) {
       initialState.currentUser = res.data;
     }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { addComment, listCommentVoByPage } from '@/services/onlinejudge-backend/commentController';
 import {
   Avatar,
   Button,
@@ -15,13 +14,17 @@ import {
 } from 'antd';
 import moment from 'moment';
 import { UserOutlined } from '@ant-design/icons';
+import {
+  addCommentUsingPost,
+  listCommentVoByPageUsingPost,
+} from '@/services/onlinejudge-question-service/commentController';
 
 interface Props {
   questionId: number;
 }
 
 const CommentPage: React.FC<Props> = ({ questionId }) => {
-  const [data, setData] = useState<API.PageCommentVO>({});
+  const [data, setData] = useState<API.PageCommentVO_>({});
   const [pageParams, setPageParams] = useState<PageParams>({
     current: 1,
     pageSize: 10,
@@ -31,7 +34,7 @@ const CommentPage: React.FC<Props> = ({ questionId }) => {
 
   const loadData = async (pageParams: PageParams) => {
     try {
-      const res = await listCommentVoByPage({ questionId, ...pageParams });
+      const res = await listCommentVoByPageUsingPost({ questionId, ...pageParams });
       if (res.code === 0 && res.data) {
         setData(res.data);
       } else {
@@ -61,7 +64,7 @@ const CommentPage: React.FC<Props> = ({ questionId }) => {
 
     setIsSubmitting(true);
     try {
-      const res = await addComment({
+      const res = await addCommentUsingPost({
         questionId,
         content: newComment.trim(),
       });

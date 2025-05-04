@@ -4,7 +4,7 @@ import { Helmet, history, useModel } from '@umijs/max';
 import { message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { createStyles } from 'antd-style';
-import {userLogin} from "@/services/onlinejudge-backend/userController";
+import { userLoginUsingPost } from '@/services/onlinejudge-user-service/userController';
 
 const useStyles = createStyles(() => {
   return {
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.UserLoginRequest) => {
     // 登录
-    const res = await userLogin({
+    const res = await userLoginUsingPost({
       ...values,
     });
     if (res.code === 0) {

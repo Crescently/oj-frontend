@@ -2,7 +2,7 @@ import '@umijs/max';
 import { message, Modal } from 'antd';
 import React from 'react';
 import { type ProColumns, ProTable } from '@ant-design/pro-components';
-import { updateUser } from '@/services/onlinejudge-backend/adminController';
+import { updateUserUsingPut } from '@/services/onlinejudge-user-service/adminController';
 
 interface Props {
   oldData?: API.UserVO;
@@ -20,7 +20,7 @@ const UpdateUserForm: React.FC<Props> = (props) => {
   const handleUpdate = async (fields: API.UserInfoUpdateRequest) => {
     const hide = message.loading('正在更新');
     try {
-      await updateUser({
+      await updateUserUsingPut({
         id: oldData.id,
         ...fields,
       });

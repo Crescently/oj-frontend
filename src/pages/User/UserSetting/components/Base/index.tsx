@@ -2,9 +2,12 @@ import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-component
 import { Input, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import useStyles from './index.style';
-import { getUserInfo, updateUserInfo } from '@/services/onlinejudge-backend/userController';
 import { ProFormInstance } from '@ant-design/pro-form';
 import AvatarView from '@/pages/User/UserSetting/components/Base/AvatarView';
+import {
+  getUserInfoUsingGet,
+  updateUserInfoUsingPut,
+} from '@/services/onlinejudge-user-service/userController';
 
 const BaseView: React.FC = () => {
   const { styles } = useStyles();
@@ -13,7 +16,7 @@ const BaseView: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<API.UserVO>({});
 
   const getCurrentUser = async () => {
-    const res = await getUserInfo();
+    const res = await getUserInfoUsingGet();
     if (res.code === 0 && res.data) {
       setCurrentUser(res.data);
       formRef.current?.setFieldsValue(res.data);
@@ -37,7 +40,7 @@ const BaseView: React.FC = () => {
   };
   const handleFinish = async (value: API.UserUpdateInfoRequest) => {
     console.log(value);
-    const res = await updateUserInfo({
+    const res = await updateUserInfoUsingPut({
       id: currentUser.id,
       ...value,
     });

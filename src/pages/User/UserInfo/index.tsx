@@ -14,11 +14,11 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useStyles from './UserInfo.style';
-import { getUserInfo } from '@/services/onlinejudge-backend/userController';
-import { listMyFavourQuestionByPage } from '@/services/onlinejudge-backend/questionFavourController';
 import QuestionList from '@/pages/User/UserInfo/components/QuestionList';
-import { listMyQuestionVoByPage } from '@/services/onlinejudge-backend/questionController';
 import CheckInCalendar from '@/pages/User/UserInfo/components/TestCheckIn';
+import { getUserInfoUsingGet } from '@/services/onlinejudge-user-service/userController';
+import { listMyFavourQuestionByPageUsingPost } from '@/services/onlinejudge-question-service/questionFavourController';
+import { listMyQuestionVoByPageUsingPost } from '@/services/onlinejudge-question-service/questionController';
 
 export type tabKeyType = 'history' | 'favourites';
 
@@ -26,11 +26,11 @@ const UserInfo: React.FC = () => {
   const { styles } = useStyles();
   const [tabKey, setTabKey] = useState<tabKeyType>('history');
   const [currentUser, setCurrentUser] = useState<API.UserVO>({});
-  const [myFavourList, setMyFavourList] = useState<API.PageQuestionVO>({});
-  const [myHistoryList, setMyHistoryList] = useState<API.PageQuestionVO>({});
+  const [myFavourList, setMyFavourList] = useState<API.PageQuestionVO_>({});
+  const [myHistoryList, setMyHistoryList] = useState<API.PageQuestionVO_>({});
 
   const getCurrentUser = async () => {
-    const res = await getUserInfo();
+    const res = await getUserInfoUsingGet();
     if (res.code === 0 && res.data) {
       setCurrentUser(res.data);
     } else {
@@ -52,7 +52,9 @@ const UserInfo: React.FC = () => {
   };
 
   const getMyFavourList = async () => {
-    const res = await listMyFavourQuestionByPage({ ...pageParams });
+    const res = await listMyFavourQuestionByPageUsingPost({
+      ...pageParams,
+    });
     if (res.code === 0 && res.data) {
       setMyFavourList(res.data);
     } else {
@@ -61,7 +63,7 @@ const UserInfo: React.FC = () => {
   };
 
   const getMyHistoryList = async () => {
-    const res = await listMyQuestionVoByPage({ ...pageParams });
+    const res = await listMyQuestionVoByPageUsingPost({ ...pageParams });
     if (res.code === 0 && res.data) {
       setMyHistoryList(res.data);
     } else {

@@ -3,7 +3,7 @@ import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
-import MonacoEditorWebpackPlugin from "monaco-editor-webpack-plugin";
+import MonacoEditorWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 const { REACT_APP_ENV = 'dev' } = process.env;
 export default defineConfig({
@@ -130,8 +130,20 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://localhost:8081/v3/api-docs',
-      projectName: 'onlinejudge-backend',
+      schemaPath: 'http://localhost:8101/api/user/v2/api-docs',
+      projectName: 'onlinejudge-user-service',
+      mock: false,
+    },
+    {
+      requestLibPath: "import { request } from '@umijs/max'",
+      schemaPath: 'http://localhost:8101/api/judge/v2/api-docs',
+      projectName: 'onlinejudge-judge-service',
+      mock: false,
+    },
+    {
+      requestLibPath: "import { request } from '@umijs/max'",
+      schemaPath: 'http://localhost:8101/api/question/v2/api-docs',
+      projectName: 'onlinejudge-question-service',
       mock: false,
     },
   ],
@@ -143,7 +155,7 @@ export default defineConfig({
   chainWebpack(config, { webpack }) {
     config.plugin('monaco-editor').use(MonacoEditorWebpackPlugin, [
       {
-        languages: ['java','cpp','go','python',],
+        languages: ['java', 'cpp', 'go', 'python'],
       },
     ]);
   },

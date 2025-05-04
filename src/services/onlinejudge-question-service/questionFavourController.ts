@@ -2,12 +2,12 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 此处后端没有提供注释 POST /question_favour/ */
-export async function doQuestionFavour(
+/** doQuestionFavour POST /api/question/favour/ */
+export async function doQuestionFavourUsingPost(
   body: API.QuestionFavourAddRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseInteger>('/question_favour/', {
+  return request<API.BaseResponseInt_>('/api/question/favour/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,12 +17,12 @@ export async function doQuestionFavour(
   });
 }
 
-/** 此处后端没有提供注释 POST /question_favour/my/list/page */
-export async function listMyFavourQuestionByPage(
+/** listMyFavourQuestionByPage POST /api/question/favour/my/list/page */
+export async function listMyFavourQuestionByPageUsingPost(
   body: API.QuestionQueryRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponsePageQuestionVO>('/question_favour/my/list/page', {
+  return request<API.BaseResponsePageQuestionVO_>('/api/question/favour/my/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
