@@ -32,14 +32,9 @@ const AddQuestion = () => {
     if (res.code === 0) {
       message.success('添加成功');
     } else {
-      message.error(res.msg);
+      message.error('添加失败' + res.msg);
     }
   };
-
-  const onFinishFailed: FormProps<API.QuestionAddRequest>['onFinishFailed'] = (errorInfo) => {
-    message.error('Failed:' + errorInfo).then();
-  };
-
   return (
     <PageContainer title={'创建题目'}>
       <Form
@@ -48,7 +43,6 @@ const AddQuestion = () => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         initialValues={{
           ...formValue,
           judgeConfig: {

@@ -40,9 +40,7 @@ const QuestionStatusPage: React.FC<QuestionStatusPageProps> = ({ questionId }) =
       title: '消耗内存',
       dataIndex: 'judgeInfo',
       render: (_, record) => {
-        // 使用解构语法提取判题信息并设置默认值
         const { memory } = record.judgeInfo || {};
-        // 格式化显示内容
         const formatMemory = memory ? `${memory} KB` : null;
         return <Typography.Text>{formatMemory}</Typography.Text>;
       },
@@ -51,9 +49,7 @@ const QuestionStatusPage: React.FC<QuestionStatusPageProps> = ({ questionId }) =
       title: '执行时间',
       dataIndex: 'judgeInfo',
       render: (_, record) => {
-        // 使用解构语法提取判题信息并设置默认值
         const { time } = record.judgeInfo || {};
-        // 格式化显示内容
         const formatTime = time ? `${time} ms` : null;
         return <Typography.Text>{formatTime}</Typography.Text>;
       },

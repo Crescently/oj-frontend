@@ -20,7 +20,7 @@ export default [
         name: '题目管理',
         icon: 'table',
         path: '/admin/question',
-        component: './Question/QuestionManage',
+        component: './Admin/Question/QuestionManage',
       },
     ],
   },
@@ -29,6 +29,12 @@ export default [
     name: '提交记录',
     icon: 'history',
     component: './Question/QuestionHistory',
+  },
+  {
+    path: '/rank',
+    name: '排行榜',
+    icon: 'trophy',
+    component: './Question/QuestionRank',
   },
   {
     path: '/add/question',
@@ -66,6 +72,7 @@ export default [
       },
     ],
   },
+
   { path: '/', redirect: '/home' },
   { path: '*', layout: false, component: './404' },
 ];

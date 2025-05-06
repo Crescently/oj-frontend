@@ -13,7 +13,8 @@ const useStyles = createStyles(() => {
       flexDirection: 'column',
       height: '100vh',
       overflow: 'auto',
-      backgroundImage: 'url(/bgc.jpg)',
+      backgroundImage:
+        "url('https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/V-_oS6r-i7wAAAAAAAAAAAAAFl94AQBr')",
       backgroundSize: '100% 100%',
     },
   };
@@ -61,8 +62,8 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="React 通用模版"
-          subTitle={'副标题'}
+          title="OJ 在线判题系统"
+          subTitle={''}
           onFinish={async (values) => {
             await handleSubmit(values as API.UserLoginRequest);
           }}

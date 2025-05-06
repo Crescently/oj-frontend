@@ -1,0 +1,36 @@
+/* ContributionCalendar.css */
+.contribution-calendar {
+  padding: 8px;
+  overflow-x: auto;
+}
+
+/* 月份标签 */
+.month-labels {
+  margin-bottom: 4px;
+}
+.month-label {
+  font-size: 10px;
+  color: #666;
+  text-align: center;
+  width: 12px;
+  transform: translateX(-50%);
+}
+
+/* 周次标签 */
+.weekday-labels {
+  padding-top: 24px; /* 对齐方块行 */
+  text-align: right;
+  font-size: 10px;
+  color: #666;
+  margin-right: 4px;
+}
+
+/* 方块样式（保持不变） */
+.day-square {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin: 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}

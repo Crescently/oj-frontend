@@ -48,7 +48,6 @@ const UpdateQuestion = () => {
   }, [params]);
 
   const onFinish: FormProps<API.QuestionUpdateRequest>['onFinish'] = async (values) => {
-    console.log('Success:', values);
     const res = await updateQuestionUsingPost({ id: data.id, ...values });
     if (res.code === 0) {
       message.success('修改成功');

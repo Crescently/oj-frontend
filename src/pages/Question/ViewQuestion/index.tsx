@@ -1,6 +1,6 @@
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import React, { useRef, useState } from 'react';
-import { Space, Tag } from 'antd';
+import { Progress, Space, Tag } from 'antd';
 import Typography from 'antd/lib/typography';
 import { history } from '@@/core/history';
 import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
@@ -56,15 +56,16 @@ const ViewQuestion = () => {
       title: '通过率',
       dataIndex: 'acceptedNum',
       render: (_, record) => {
+        const acceptPercent: number = record.submitNum
+          ? Math.round(((record.acceptedNum ?? 0) / record.submitNum) * 100 * 100) / 100 // 保留两位小数
+          : 0;
         return (
-          <Space size={4}>
-            <Typography.Text>
-              {(record.submitNum ? (record.acceptedNum ?? 0) / record.submitNum : 0) * 100}%
-            </Typography.Text>
-            <Typography.Text>
-              {record.acceptedNum}/{record.submitNum}
-            </Typography.Text>
-          </Space>
+          <Progress
+            percentPosition={{ align: 'end', type: 'outer' }}
+            percent={acceptPercent}
+            strokeLinecap="butt"
+            strokeWidth={16}
+          />
         );
       },
       hideInSearch: true,

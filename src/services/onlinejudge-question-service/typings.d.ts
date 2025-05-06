@@ -59,6 +59,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type BaseResponseString_ = {
+    code?: number;
+    data?: string;
+    msg?: string;
+  };
+
   type CommentAddRequest = {
     content?: string;
     questionId?: number;
@@ -81,6 +87,11 @@ declare namespace API {
 
   type DeleteRequest = {
     id?: number;
+  };
+
+  type getQuestionAnswerByIdUsingPOSTParams = {
+    /** questionId */
+    questionId?: number;
   };
 
   type getQuestionByIdUsingGET1Params = {
@@ -364,7 +375,6 @@ declare namespace API {
     status?: number;
     updateTime?: string;
     userId?: number;
-    userVO?: UserVO;
   };
 
   type QuestionThumbAddRequest = {

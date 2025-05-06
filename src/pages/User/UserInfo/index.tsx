@@ -1,4 +1,10 @@
-import { HomeOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  CarryOutOutlined,
+  HighlightOutlined,
+  HomeOutlined,
+  PhoneOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
 import {
@@ -11,14 +17,17 @@ import {
   PaginationProps,
   Row,
   Space,
+  Statistic,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useStyles from './UserInfo.style';
 import QuestionList from '@/pages/User/UserInfo/components/QuestionList';
-import CheckInCalendar from '@/pages/User/UserInfo/components/TestCheckIn';
 import { getUserInfoUsingGet } from '@/services/onlinejudge-user-service/userController';
 import { listMyFavourQuestionByPageUsingPost } from '@/services/onlinejudge-question-service/questionFavourController';
 import { listMyQuestionVoByPageUsingPost } from '@/services/onlinejudge-question-service/questionController';
+import { MyDivider } from '@/components';
+import ContributionCalendar from '@/pages/User/UserInfo/components/SignIn';
+import { getSignedDatesUsingGet } from '@/services/onlinejudge-user-service/signInController';
 
 export type tabKeyType = 'history' | 'favourites';
 
@@ -28,6 +37,7 @@ const UserInfo: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<API.UserVO>({});
   const [myFavourList, setMyFavourList] = useState<API.PageQuestionVO_>({});
   const [myHistoryList, setMyHistoryList] = useState<API.PageQuestionVO_>({});
+  const [signedInDays, setSignedInDays] = useState<string[]>([]);
 
   const getCurrentUser = async () => {
     const res = await getUserInfoUsingGet();
@@ -41,7 +51,7 @@ const UserInfo: React.FC = () => {
 
   const [pageParams, setPageParams] = useState<PageParams>({
     current: 1,
-    pageSize: 5,
+    pageSize: 2,
   });
 
   const onChange: PaginationProps['onChange'] = (current, pageSize) => {
@@ -71,10 +81,21 @@ const UserInfo: React.FC = () => {
     }
   };
 
+  const loadData = async () => {
+    const res = await getSignedDatesUsingGet();
+    if (res.code === 0) {
+      if (res.data !== undefined) {
+        const daysList = res.data.map((item) => item?.signDate ?? '');
+        setSignedInDays(daysList);
+      }
+    }
+  };
+
   useEffect(() => {
     getCurrentUser().then();
     getMyFavourList().then();
     getMyHistoryList().then();
+    loadData().then();
   }, [pageParams]);
 
   //  渲染用户信息
@@ -200,13 +221,33 @@ const UserInfo: React.FC = () => {
                   <Descriptions.Item> {currentUser?.description}</Descriptions.Item>
                 </Descriptions>
                 <Divider dashed />
-                {/*  todo 用户签到情况显示区域（如果有时间）*/}
-                <CheckInCalendar />
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Statistic
+                      title="做题数"
+                      value={myHistoryList.total}
+                      prefix={<HighlightOutlined />}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Statistic
+                      title="登陆天数"
+                      value={signedInDays.length}
+                      prefix={<CarryOutOutlined />}
+                    />
+                  </Col>
+                </Row>
               </div>
             )}
           </Card>
         </Col>
         <Col lg={17} md={24}>
+          <ContributionCalendar
+            userId={currentUser.id as number}
+            signedInDays={signedInDays}
+            loadData={loadData}
+          />
+          <MyDivider height={16} />
           <Card
             className={styles.tabsCard}
             variant={'borderless'}

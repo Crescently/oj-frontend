@@ -8,7 +8,7 @@ const editorOptions: IStandaloneEditorConstructionOptions = {
   lineNumbersMinChars: 1,
   renderLineHighlight: 'all',
   colorDecorators: true,
-  fontSize: 20,
+  fontSize: 16,
   wordWrap: 'on',
   suggestOnTriggerCharacters: true,
   minimap: { enabled: false },
@@ -49,9 +49,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, language = 'java', onCha
   }, [language, editorInstance]);
 
   return (
-    <>
+    <div>
       <Editor
-        height="750px"
+        height="550px"
         language={language}
         saveViewState={true}
         value={value}
@@ -59,7 +59,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, language = 'java', onCha
         onMount={handleEditorDidMount}
         options={editorOptions}
       />
-    </>
+    </div>
   );
 };
 

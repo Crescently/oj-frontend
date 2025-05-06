@@ -1,8 +1,11 @@
 import useStyles from './index.style';
-import { Button, GetProp, message, Upload, UploadProps } from 'antd';
+import { Avatar, Button, GetProp, message, Upload, UploadProps } from 'antd';
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import { updateAvatarUsingPatch } from '@/services/onlinejudge-user-service/userController';
+import React, { useState } from 'react';
+import {
+  getUserInfoUsingGet,
+  updateAvatarUsingPatch,
+} from '@/services/onlinejudge-user-service/userController';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -18,8 +21,13 @@ const beforeUpload = (file: FileType) => {
   return isJpgOrPng && isLt2M;
 };
 
+interface Props {
+  avatar: string;
+  userId: number;
+}
+
 // 头像组件
-const AvatarView = ({ avatar }: { avatar: string }) => {
+const AvatarView: React.FC<Props> = ({ avatar, userId }) => {
   const { styles } = useStyles();
   const [loading, setLoading] = useState(false);
   const handleChange: UploadProps['onChange'] = async (info) => {
@@ -28,9 +36,14 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
       return;
     }
     if (info.file.status === 'done') {
-      const res = await updateAvatarUsingPatch({ avatarUrl: info.file.response.data });
+      const res = await updateAvatarUsingPatch({
+        userId: userId,
+        avatarUrl: info.file.response.data,
+      });
       if (res.code === 0) {
         message.success('头像更新成功');
+        // 重新获取用户信息
+        await getUserInfoUsingGet();
       } else {
         message.error('头像更新失败');
       }
@@ -40,11 +53,11 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
     <>
       <div className={styles.avatar_title}>头像</div>
       <div className={styles.avatar}>
-        {loading ? <LoadingOutlined /> : <img src={avatar} alt="avatar" />}
+        {loading ? <LoadingOutlined /> : <Avatar src={avatar} className={styles.avatar} />}
       </div>
       <Upload
         showUploadList={false}
-        action="http://localhost:8081/upload"
+        action="http://localhost:8101/api/user/upload"
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >

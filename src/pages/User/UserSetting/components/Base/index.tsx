@@ -45,7 +45,7 @@ const BaseView: React.FC = () => {
       ...value,
     });
     if (res.code === 0) {
-      message.success('更新基本信息成功');
+      message.success('更新用户信息成功');
     } else {
       message.error('更新失败' + res.msg);
     }
@@ -137,7 +137,7 @@ const BaseView: React.FC = () => {
           </ProForm>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={getAvatarURL()} />
+          <AvatarView avatar={getAvatarURL()} userId={currentUser.id as number} />
         </div>
       </>
     </div>

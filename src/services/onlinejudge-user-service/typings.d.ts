@@ -11,6 +11,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type BaseResponseListSignInRecord_ = {
+    code?: number;
+    data?: SignInRecord[];
+    msg?: string;
+  };
+
   type BaseResponseLoginUserVO_ = {
     code?: number;
     data?: LoginUserVO;
@@ -20,6 +26,12 @@ declare namespace API {
   type BaseResponsePageUser_ = {
     code?: number;
     data?: PageUser_;
+    msg?: string;
+  };
+
+  type BaseResponseString_ = {
+    code?: number;
+    data?: string;
     msg?: string;
   };
 
@@ -36,6 +48,10 @@ declare namespace API {
   type getByIdUsingGETParams = {
     /** userId */
     userId: number;
+  };
+
+  type IdRequest = {
+    userId?: number;
   };
 
   type listByIdsUsingGETParams = {
@@ -152,6 +168,15 @@ declare namespace API {
     searchCount?: boolean;
     size?: number;
     total?: number;
+  };
+
+  type SignInRecord = {
+    createTime?: string;
+    id?: number;
+    isDelete?: number;
+    signDate?: string;
+    updateTime?: string;
+    userId?: number;
   };
 
   type User = {

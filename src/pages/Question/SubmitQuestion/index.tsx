@@ -8,6 +8,7 @@ import {
   Drawer,
   Flex,
   Form,
+  Input,
   List,
   message,
   PaginationProps,
@@ -27,32 +28,40 @@ import {
   DeploymentUnitOutlined,
   LikeFilled,
   LikeOutlined,
+  SearchOutlined,
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons';
 import CommentPage from '@/pages/Question/SubmitQuestion/CommentPage';
 import {
   doQuestionSubmitUsingPost,
+  getQuestionAnswerByIdUsingPost,
   getQuestionVoByIdUsingGet,
   listQuestionVoByPageUsingPost,
 } from '@/services/onlinejudge-question-service/questionController';
 import { doThumbUsingPost } from '@/services/onlinejudge-question-service/questionThumbController';
 import { doQuestionFavourUsingPost } from '@/services/onlinejudge-question-service/questionFavourController';
 import QuestionStatusPage from '@/pages/Question/SubmitQuestion/QuestionStatusPage';
+import _ from 'lodash';
 
+/**
+ * 用户做题界面
+ * @constructor
+ */
 const SubmitQuestion = () => {
   const params = useParams();
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [questionData, setQuestionData] = useState<API.QuestionVO>({});
   const [questionList, setQuestionList] = useState<API.PageQuestionVO_>({});
-  const [open, setOpen] = useState(false);
-
-  const showDrawer = () => {
-    setOpen(true);
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const [questionListOpen, setQuestionListOpen] = useState(false);
+  const [questionAnswer, setQuestionAnswer] = useState<string>('');
+  const showQuestionDrawer = () => {
+    setQuestionListOpen(true);
   };
 
-  const onClose = () => {
-    setOpen(false);
+  const onQuestionDrawerClose = () => {
+    setQuestionListOpen(false);
   };
 
   const [pageParams, setPageParams] = useState<PageParams>({
@@ -68,9 +77,21 @@ const SubmitQuestion = () => {
   };
 
   const getQuestionList = async () => {
-    const res = await listQuestionVoByPageUsingPost(pageParams);
+    const res = await listQuestionVoByPageUsingPost({
+      ...pageParams,
+      title: searchKeyword,
+    });
     if (res.code === 0 && res.data) {
       setQuestionList(res.data);
+    }
+  };
+
+  const getQuestionAnswer = async (params: any) => {
+    const res = await getQuestionAnswerByIdUsingPost(params);
+    if (res.code === 0 && res.data) {
+      setQuestionAnswer(res.data);
+    } else {
+      setQuestionAnswer(res.msg ?? '');
     }
   };
 
@@ -84,6 +105,7 @@ const SubmitQuestion = () => {
   };
   useEffect(() => {
     loadData(params).then();
+    getQuestionAnswer(params).then();
     getQuestionList().then();
   }, [params, pageParams]);
 
@@ -141,7 +163,28 @@ const SubmitQuestion = () => {
       favourNum: (prev.favourNum || 0) + (prev.favour ? -1 : 1),
     }));
 
-  // 辅助组件抽离
+  const handleNextQuestion = () => {
+    const records = questionList.records || [];
+    if (records.length === 0) return;
+
+    const currentIndex = records.findIndex((item) => item.id === questionData.id);
+    if (currentIndex === -1) {
+      message.warning('当前题目不在列表中').then();
+      return;
+    }
+
+    const nextIndex = (currentIndex + 1) % records.length;
+    const nextQuestion = records[nextIndex];
+    history.push(`/submit/question/${nextQuestion.id}`);
+    onQuestionDrawerClose();
+  };
+
+  const calculatePassRate = (item: API.QuestionVO) => {
+    return item.submitNum
+      ? Math.round(((item.acceptedNum ?? 0) / item.submitNum) * 100 * 100) / 100 // 保留两位小数
+      : 0;
+  };
+
   const JudgeLimitTag: React.FC<{ data: API.QuestionVO }> = ({ data }) => (
     <Space size={6} direction="horizontal">
       <Tag icon={<ClockCircleOutlined />} color="blue">
@@ -158,13 +201,11 @@ const SubmitQuestion = () => {
 
   const StatisticRow: React.FC<{ data: API.QuestionVO }> = ({ data }) => (
     <Flex wrap gap="large" align={'center'}>
-      <Typography.Text>通过次数：{data.acceptedNum}</Typography.Text>
+      <Typography.Text>通过数：{data.acceptedNum}</Typography.Text>
       <Divider type="vertical" />
-      <Typography.Text>提交次数：{data.submitNum}</Typography.Text>
+      <Typography.Text>提交数：{data.submitNum}</Typography.Text>
       <Divider type="vertical" />
-      <Typography.Text>
-        通过率：{data.submitNum ? (data.acceptedNum ?? 0) / data.submitNum : 0}
-      </Typography.Text>
+      <Typography.Text>通过率：{calculatePassRate(data)}%</Typography.Text>
     </Flex>
   );
 
@@ -187,84 +228,159 @@ const SubmitQuestion = () => {
       </Button>
     </Space>
   );
+
+  const handleSearch = useCallback(
+    _.debounce((value: string) => {
+      setPageParams((prev) => ({
+        ...prev,
+        current: 1,
+      }));
+      setSearchKeyword(value);
+    }, 500),
+    [],
+  );
   const QuestionList: React.FC = () => (
-    <List<API.QuestionVO>
-      size="large"
-      rowKey="id"
-      itemLayout="vertical"
-      split={true}
-      pagination={{
-        position: 'bottom',
-        align: 'end',
-        current: pageParams.current,
-        pageSize: pageParams.pageSize,
-        total: questionList.total,
-        onChange: onChange,
-      }}
-      dataSource={questionList.records || []}
-      renderItem={(item) => (
-        <List.Item
-          key={item.id}
-          onClick={() => {
-            history.push(`/submit/question/${item.id}`);
-            onClose();
-          }}
-        >
-          <List.Item.Meta title={<a>{item.title}</a>} />
-        </List.Item>
-      )}
-    />
+    <div style={{ padding: '0 16px' }}>
+      <Input
+        placeholder="搜索题目..."
+        allowClear
+        prefix={<SearchOutlined />}
+        onChange={(e) => handleSearch(e.target.value)}
+        style={{ marginBottom: 16 }}
+      />
+      <List<API.QuestionVO>
+        size="large"
+        rowKey="id"
+        itemLayout="vertical"
+        split={false}
+        pagination={{
+          position: 'bottom',
+          align: 'end',
+          current: pageParams.current,
+          pageSize: pageParams.pageSize,
+          total: questionList.total,
+          onChange: onChange,
+        }}
+        dataSource={questionList.records || []}
+        renderItem={(item) => (
+          <List.Item
+            style={{
+              padding: '16px',
+              margin: '8px 0',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              transition: 'all 0.3s',
+              cursor: 'pointer',
+              background: item.id === questionData.id ? '#f0f7ff' : 'inherit',
+            }}
+            onClick={() => {
+              history.push(`/submit/question/${item.id}`);
+              onQuestionDrawerClose();
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography.Text strong style={{ fontSize: 16 }}>
+                {item.title}
+              </Typography.Text>
+            </div>
+            <Space style={{ marginTop: 8 }}>
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                提交数: {item.submitNum || 0}
+              </Typography.Text>
+              <Divider type="vertical" />
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                通过率: {calculatePassRate(item)}%
+              </Typography.Text>
+            </Space>
+          </List.Item>
+        )}
+      />
+    </div>
   );
 
   return (
     <PageContainer
       title={
-        <Button type={'primary'} style={{ width: 64 }} onClick={showDrawer}>
-          题库
-        </Button>
+        <Space>
+          <Button type="primary" onClick={showQuestionDrawer}>
+            题库
+          </Button>
+          <Button onClick={handleNextQuestion} type={'primary'}>
+            下一题
+          </Button>
+        </Space>
       }
     >
-      <Drawer title="题目列表" width={500} placement={'left'} onClose={onClose} open={open}>
+      <Drawer
+        title="题目列表"
+        width={500}
+        placement={'left'}
+        onClose={onQuestionDrawerClose}
+        open={questionListOpen}
+      >
         <QuestionList />
       </Drawer>
-
-      <Splitter style={{ height: '100vh' }}>
-        <Splitter.Panel defaultSize="50%" style={{ marginLeft: 10 }}>
+      <Splitter
+        style={{
+          height: '100vh',
+        }}
+      >
+        <Splitter.Panel
+          defaultSize="50%"
+          style={{
+            marginRight: 10,
+            background: 'white',
+            borderRadius: '16px',
+          }}
+        >
           <Tabs type="card" defaultActiveKey="1">
-            <Tabs.TabPane tab="答题" key="1">
-              <Typography.Title>{questionData.title}</Typography.Title>
-              <Descriptions column={1}>
-                <Descriptions.Item>
-                  {questionData.tags?.map((tag, index) => {
-                    return (
-                      <Tag key={index} color={'green'}>
-                        {tag}
-                      </Tag>
-                    );
-                  })}
-                </Descriptions.Item>
-                <Descriptions.Item>
-                  <JudgeLimitTag data={questionData} />
-                </Descriptions.Item>
-                <Descriptions.Item>
-                  <MdViewer value={questionData.content} />
-                </Descriptions.Item>
-                <Descriptions.Item>
-                  <StatisticRow data={questionData} />
-                </Descriptions.Item>
-              </Descriptions>
-              <InteractionButtons data={questionData} />
+            <Tabs.TabPane tab="题目详情" key="1">
+              <div style={{ paddingLeft: '16px' }}>
+                <Typography.Title>{questionData.title}</Typography.Title>
+                <Descriptions column={1}>
+                  <Descriptions.Item>
+                    {questionData.tags?.map((tag, index) => {
+                      return (
+                        <Tag key={index} color={'green'}>
+                          {tag}
+                        </Tag>
+                      );
+                    })}
+                  </Descriptions.Item>
+                  <Descriptions.Item>
+                    <JudgeLimitTag data={questionData} />
+                  </Descriptions.Item>
+                  <Descriptions.Item>
+                    <MdViewer value={questionData.content} />
+                  </Descriptions.Item>
+                  <Descriptions.Item>
+                    <StatisticRow data={questionData} />
+                  </Descriptions.Item>
+                </Descriptions>
+                <InteractionButtons data={questionData} />
+              </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="评论" key="2">
               <CommentPage questionId={questionData.id as number} />
             </Tabs.TabPane>
-            <Tabs.TabPane tab="答案" key="3"></Tabs.TabPane>
+            <Tabs.TabPane tab="答案" key="3">
+              <div style={{ paddingLeft: '16px' }}>
+                <MdViewer value={questionAnswer} />
+              </div>
+            </Tabs.TabPane>
             <Tabs.TabPane tab="提交历史" key="4">
               <QuestionStatusPage questionId={questionData.id as number} />
             </Tabs.TabPane>
           </Tabs>
         </Splitter.Panel>
-        <Splitter.Panel>
+        <Splitter.Panel
+          style={{
+            marginLeft: 10,
+            background: 'white',
+            borderRadius: '16px',
+            paddingTop: 10,
+          }}
+        >
           <Form
             name={'submitQuestion'}
             onFinish={onFinish}
@@ -298,13 +414,12 @@ const SubmitQuestion = () => {
                 />
               </Form.Item>
             </Space>
-
             <Form.Item<API.QuestionSubmitAddRequest> name="code">
               <CodeEditor language={selectedLanguage || 'java'} />
             </Form.Item>
-
+            <Divider variant={'dashed'} />
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" style={{ marginLeft: 750, width: 100 }}>
                 提交
               </Button>
             </Form.Item>
