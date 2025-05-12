@@ -13,7 +13,6 @@ const Settings: ProLayoutProps & {
   colorWeak: false,
   title: '在线判题平台',
   pwa: true,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
   token: {
     // bgLayout: 'white',

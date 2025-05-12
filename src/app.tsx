@@ -7,7 +7,7 @@ import NoAuth from '@/pages/NoAuth';
 import defaultSettings from '../config/defaultSettings';
 import 'bytemd/dist/index.css';
 import { getUserInfoUsingGet } from '@/services/onlinejudge-user-service/userController';
-
+import logo from '../public/logo.png';
 const loginPath = '/user/login';
 
 export async function getInitialState(): Promise<initialState> {
@@ -33,6 +33,7 @@ export const layout: RunTimeLayoutConfig = () => {
         return <AvatarDropdown />;
       },
     },
+    logo: logo,
     // footerRender: () => <Footer />,
     menuHeaderRender: undefined,
     // 自定义 403 页面

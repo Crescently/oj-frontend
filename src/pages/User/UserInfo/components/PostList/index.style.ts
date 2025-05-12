@@ -2,7 +2,7 @@ import { createStyles } from 'antd-style';
 
 const useStyles = createStyles(({ token }) => {
   return {
-    questionList: {
+    postList: {
       '.ant-list-item:first-child': { paddingTop: '0' },
       cursor: 'pointer',
     },

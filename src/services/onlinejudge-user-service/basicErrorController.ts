@@ -2,41 +2,41 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** error GET /api/user/error */
-export async function errorUsingGet(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/user/error', {
+/** errorHtml GET /api/user/error */
+export async function errorHtmlUsingGet(options?: { [key: string]: any }) {
+  return request<API.ModelAndView>('/api/user/error', {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-/** error PUT /api/user/error */
-export async function errorUsingPut(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/user/error', {
+/** errorHtml PUT /api/user/error */
+export async function errorHtmlUsingPut(options?: { [key: string]: any }) {
+  return request<API.ModelAndView>('/api/user/error', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** error POST /api/user/error */
-export async function errorUsingPost(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/user/error', {
+/** errorHtml POST /api/user/error */
+export async function errorHtmlUsingPost(options?: { [key: string]: any }) {
+  return request<API.ModelAndView>('/api/user/error', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** error DELETE /api/user/error */
-export async function errorUsingDelete(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/user/error', {
+/** errorHtml DELETE /api/user/error */
+export async function errorHtmlUsingDelete(options?: { [key: string]: any }) {
+  return request<API.ModelAndView>('/api/user/error', {
     method: 'DELETE',
     ...(options || {}),
   });
 }
 
-/** error PATCH /api/user/error */
-export async function errorUsingPatch(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/user/error', {
+/** errorHtml PATCH /api/user/error */
+export async function errorHtmlUsingPatch(options?: { [key: string]: any }) {
+  return request<API.ModelAndView>('/api/user/error', {
     method: 'PATCH',
     ...(options || {}),
   });

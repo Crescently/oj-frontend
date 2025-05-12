@@ -146,6 +146,12 @@ export default defineConfig({
       projectName: 'onlinejudge-question-service',
       mock: false,
     },
+    {
+      requestLibPath: "import { request } from '@umijs/max'",
+      schemaPath: 'http://localhost:8101/api/post/v2/api-docs',
+      projectName: 'onlinejudge-post-service',
+      mock: false,
+    },
   ],
   mfsu: {
     strategy: 'normal',

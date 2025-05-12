@@ -67,7 +67,7 @@ const UpdateQuestion = () => {
         onFinishFailed={(errorInfo) => message.error('提交失败: ' + errorInfo)}
         form={form}
       >
-        <Form.Item<API.QuestionAddRequest> label={'题目'} name="title">
+        <Form.Item<API.QuestionUpdateRequest> label={'题目'} name="title">
           <Input placeholder="请输入题目" />
         </Form.Item>
 

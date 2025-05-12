@@ -83,7 +83,15 @@ const CommentPage: React.FC<Props> = ({ questionId }) => {
     }
   };
 
-  const formatTime = (time: any) => moment(time).fromNow();
+  const formatTime = (time: any) => {
+    const inputTime = moment(time);
+    const now = moment();
+    if (now.diff(inputTime, 'days') > 30) {
+      return inputTime.format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      return inputTime.fromNow();
+    }
+  };
 
   const onChange: PaginationProps['onChange'] = (current, pageSize) => {
     setPageParams({ current, pageSize });

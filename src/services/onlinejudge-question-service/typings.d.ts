@@ -90,8 +90,8 @@ declare namespace API {
   };
 
   type getQuestionAnswerByIdUsingPOSTParams = {
-    /** questionId */
-    questionId?: number;
+    /** id */
+    id?: number;
   };
 
   type getQuestionByIdUsingGET1Params = {

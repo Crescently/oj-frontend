@@ -28,6 +28,9 @@ import { listMyQuestionVoByPageUsingPost } from '@/services/onlinejudge-question
 import { MyDivider } from '@/components';
 import ContributionCalendar from '@/pages/User/UserInfo/components/SignIn';
 import { getSignedDatesUsingGet } from '@/services/onlinejudge-user-service/signInController';
+import PostList from '@/pages/User/UserInfo/components/PostList';
+import { listMyPostVoByPageUsingPost } from '@/services/onlinejudge-post-service/postController';
+import { listMyFavourPostByPageUsingPost } from '@/services/onlinejudge-post-service/postFavourController';
 
 export type tabKeyType = 'history' | 'favourites';
 
@@ -37,6 +40,8 @@ const UserInfo: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<API.UserVO>({});
   const [myFavourList, setMyFavourList] = useState<API.PageQuestionVO_>({});
   const [myHistoryList, setMyHistoryList] = useState<API.PageQuestionVO_>({});
+  const [myPostList, setMyPostList] = useState<API.PagePostVO_>({});
+  const [myFavourPostList, setMyFavourPostList] = useState<API.PagePostVO_>({});
   const [signedInDays, setSignedInDays] = useState<string[]>([]);
 
   const getCurrentUser = async () => {
@@ -72,10 +77,30 @@ const UserInfo: React.FC = () => {
     }
   };
 
+  const getMyFavourPostList = async () => {
+    const res = await listMyFavourPostByPageUsingPost({
+      ...pageParams,
+    });
+    if (res.code === 0 && res.data) {
+      setMyFavourPostList(res.data);
+    } else {
+      message.error(res.msg);
+    }
+  };
+
   const getMyHistoryList = async () => {
     const res = await listMyQuestionVoByPageUsingPost({ ...pageParams });
     if (res.code === 0 && res.data) {
       setMyHistoryList(res.data);
+    } else {
+      message.error(res.msg);
+    }
+  };
+
+  const getMyPostList = async () => {
+    const res = await listMyPostVoByPageUsingPost({ ...pageParams });
+    if (res.code === 0 && res.data) {
+      setMyPostList(res.data);
     } else {
       message.error(res.msg);
     }
@@ -95,10 +120,11 @@ const UserInfo: React.FC = () => {
     getCurrentUser().then();
     getMyFavourList().then();
     getMyHistoryList().then();
+    getMyPostList().then();
+    getMyFavourPostList().then();
     loadData().then();
   }, [pageParams]);
 
-  //  渲染用户信息
   const renderUserInfo = ({ userAccount, telephone, address }: Partial<API.UserVO>) => {
     return (
       <div className={styles.detail}>
@@ -135,7 +161,7 @@ const UserInfo: React.FC = () => {
       key: 'history',
       tab: (
         <span>
-          历史题目{' '}
+          历史题目
           <span
             style={{
               fontSize: 14,
@@ -148,7 +174,33 @@ const UserInfo: React.FC = () => {
       key: 'favourites',
       tab: (
         <span>
-          我的收藏{' '}
+          我的收藏
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          ></span>
+        </span>
+      ),
+    },
+    {
+      key: 'mypost',
+      tab: (
+        <span>
+          我的帖子
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          ></span>
+        </span>
+      ),
+    },
+    {
+      key: 'myfavoritepost',
+      tab: (
+        <span>
+          帖子收藏
           <span
             style={{
               fontSize: 14,
@@ -178,6 +230,26 @@ const UserInfo: React.FC = () => {
           pageParams={pageParams}
           onChange={onChange}
           total={myFavourList.total ?? 0}
+        />
+      );
+    }
+    if (tabValue === 'mypost') {
+      return (
+        <PostList
+          postList={myPostList.records ?? []}
+          pageParams={pageParams}
+          onChange={onChange}
+          total={myPostList.total ?? 0}
+        />
+      );
+    }
+    if (tabValue === 'myfavoritepost') {
+      return (
+        <PostList
+          postList={myFavourPostList.records ?? []}
+          pageParams={pageParams}
+          onChange={onChange}
+          total={myFavourPostList.total ?? 0}
         />
       );
     }

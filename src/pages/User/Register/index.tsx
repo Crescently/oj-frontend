@@ -53,7 +53,7 @@ const Register: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
+          logo={<img alt="logo" src="/logo.png" />}
           title="用户注册"
           onFinish={async (values) => {
             await handleSubmit(values as API.UserRegisterRequest);

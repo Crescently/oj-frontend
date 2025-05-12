@@ -16,13 +16,30 @@ export default [
     routes: [
       { path: '/admin', redirect: '/admin/user' },
       { name: '用户管理', icon: 'table', path: '/admin/user', component: './Admin/User' },
-      {
-        name: '题目管理',
-        icon: 'table',
-        path: '/admin/question',
-        component: './Admin/Question/QuestionManage',
-      },
+      { name: '题目管理', icon: 'table', path: '/admin/question', component: './Admin/Question' },
+      { name: '帖子管理', icon: 'table', path: '/admin/post', component: './Admin/Post' },
     ],
+  },
+  {
+    path: '/post',
+    name: '讨论',
+    icon: 'comment',
+    component: './Post/ViewPost',
+  },
+  {
+    path: '/post/detail/:id',
+    component: './Post/PostDetail',
+    hideInMenu: true,
+  },
+  {
+    path: '/post/add',
+    component: './Post/AddPost',
+    hideInMenu: true,
+  },
+  {
+    path: '/post/update/:id',
+    component: './Post/UpdatePost',
+    hideInMenu: true,
   },
   {
     path: '/history/question',
