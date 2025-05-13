@@ -9,6 +9,7 @@ import { deleteUserUsingDelete } from '@/services/onlinejudge-user-service/admin
 import React, { useRef } from 'react';
 import { listPostVoByPageUsingPost } from '@/services/onlinejudge-post-service/postController';
 import TagInput from '@/pages/Question/AddQuestion/components/TagInput';
+import { history } from '@@/core/history';
 
 const PostManage = () => {
   const actionRef = useRef<ActionType>();
@@ -52,10 +53,10 @@ const PostManage = () => {
       title: '标签',
       dataIndex: 'tags',
       render: (_, record) => {
-        if (record?.tagList) {
+        if (record?.tags) {
           return (
             <Space size={4}>
-              {record?.tagList.map((tag, index) => (
+              {record?.tags.map((tag, index) => (
                 <Tag key={index} color={'green'} style={{ margin: '2px 4px 2px 0' }}>
                   {tag.trim()}
                 </Tag>
@@ -104,15 +105,25 @@ const PostManage = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (
-        <Typography.Link
-          type={'danger'}
-          key={'delete'}
-          onClick={() => {
-            handleDelete(record).then();
-          }}
-        >
-          删除
-        </Typography.Link>
+        <Space size={'middle'}>
+          <Typography.Link
+            key={'update'}
+            onClick={() => {
+              history.push(`/post/update/${record.id}`);
+            }}
+          >
+            修改
+          </Typography.Link>
+          <Typography.Link
+            type={'danger'}
+            key={'delete'}
+            onClick={() => {
+              handleDelete(record).then();
+            }}
+          >
+            删除
+          </Typography.Link>
+        </Space>
       ),
     },
   ];

@@ -2,41 +2,41 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** error GET /api/judge/error */
+/** error GET /api/post/error */
 export async function errorUsingGet(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/judge/error', {
+  return request<Record<string, any>>('/api/post/error', {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-/** error PUT /api/judge/error */
+/** error PUT /api/post/error */
 export async function errorUsingPut(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/judge/error', {
+  return request<Record<string, any>>('/api/post/error', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** error POST /api/judge/error */
+/** error POST /api/post/error */
 export async function errorUsingPost(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/judge/error', {
+  return request<Record<string, any>>('/api/post/error', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** error DELETE /api/judge/error */
+/** error DELETE /api/post/error */
 export async function errorUsingDelete(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/judge/error', {
+  return request<Record<string, any>>('/api/post/error', {
     method: 'DELETE',
     ...(options || {}),
   });
 }
 
-/** error PATCH /api/judge/error */
+/** error PATCH /api/post/error */
 export async function errorUsingPatch(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/judge/error', {
+  return request<Record<string, any>>('/api/post/error', {
     method: 'PATCH',
     ...(options || {}),
   });

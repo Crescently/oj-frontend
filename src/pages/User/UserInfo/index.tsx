@@ -32,7 +32,7 @@ import PostList from '@/pages/User/UserInfo/components/PostList';
 import { listMyPostVoByPageUsingPost } from '@/services/onlinejudge-post-service/postController';
 import { listMyFavourPostByPageUsingPost } from '@/services/onlinejudge-post-service/postFavourController';
 
-export type tabKeyType = 'history' | 'favourites';
+export type tabKeyType = 'history' | 'favourites' | 'mypost' | 'myfavoritepost';
 
 const UserInfo: React.FC = () => {
   const { styles } = useStyles();
@@ -54,21 +54,31 @@ const UserInfo: React.FC = () => {
     }
   };
 
-  const [pageParams, setPageParams] = useState<PageParams>({
-    current: 1,
-    pageSize: 2,
-  });
+  const [historyParams, setHistoryParams] = useState<PageParams>({ current: 1, pageSize: 2 });
+  const [favourParams, setFavourParams] = useState<PageParams>({ current: 1, pageSize: 2 });
+  const [postParams, setPostParams] = useState<PageParams>({ current: 1, pageSize: 2 });
+  const [favourPostParams, setFavourPostParams] = useState<PageParams>({ current: 1, pageSize: 2 });
 
   const onChange: PaginationProps['onChange'] = (current, pageSize) => {
-    setPageParams({
-      current,
-      pageSize,
-    });
+    switch (tabKey) {
+      case 'history':
+        setHistoryParams({ current, pageSize });
+        break;
+      case 'favourites':
+        setFavourParams({ current, pageSize });
+        break;
+      case 'mypost':
+        setPostParams({ current, pageSize });
+        break;
+      case 'myfavoritepost':
+        setFavourPostParams({ current, pageSize });
+        break;
+    }
   };
 
   const getMyFavourList = async () => {
     const res = await listMyFavourQuestionByPageUsingPost({
-      ...pageParams,
+      ...favourParams,
     });
     if (res.code === 0 && res.data) {
       setMyFavourList(res.data);
@@ -79,7 +89,7 @@ const UserInfo: React.FC = () => {
 
   const getMyFavourPostList = async () => {
     const res = await listMyFavourPostByPageUsingPost({
-      ...pageParams,
+      ...favourPostParams,
     });
     if (res.code === 0 && res.data) {
       setMyFavourPostList(res.data);
@@ -89,7 +99,7 @@ const UserInfo: React.FC = () => {
   };
 
   const getMyHistoryList = async () => {
-    const res = await listMyQuestionVoByPageUsingPost({ ...pageParams });
+    const res = await listMyQuestionVoByPageUsingPost({ ...historyParams });
     if (res.code === 0 && res.data) {
       setMyHistoryList(res.data);
     } else {
@@ -98,7 +108,7 @@ const UserInfo: React.FC = () => {
   };
 
   const getMyPostList = async () => {
-    const res = await listMyPostVoByPageUsingPost({ ...pageParams });
+    const res = await listMyPostVoByPageUsingPost({ ...postParams });
     if (res.code === 0 && res.data) {
       setMyPostList(res.data);
     } else {
@@ -118,12 +128,50 @@ const UserInfo: React.FC = () => {
 
   useEffect(() => {
     getCurrentUser().then();
-    getMyFavourList().then();
-    getMyHistoryList().then();
-    getMyPostList().then();
-    getMyFavourPostList().then();
     loadData().then();
-  }, [pageParams]);
+  }, []);
+
+  useEffect(() => {
+    if (tabKey === 'history') {
+      getMyHistoryList().then();
+    }
+  }, [historyParams]);
+
+  useEffect(() => {
+    if (tabKey === 'favourites') {
+      getMyFavourList().then();
+    }
+  }, [favourParams]);
+
+  useEffect(() => {
+    if (tabKey === 'mypost') {
+      getMyPostList().then();
+    }
+  }, [postParams]);
+
+  useEffect(() => {
+    if (tabKey === 'myfavoritepost') {
+      getMyFavourPostList().then();
+    }
+  }, [favourPostParams]);
+
+  useEffect(() => {
+    // tab切换时主动触发当前tab数据加载
+    switch (tabKey) {
+      case 'history':
+        getMyHistoryList().then();
+        break;
+      case 'favourites':
+        getMyFavourList().then();
+        break;
+      case 'mypost':
+        getMyPostList().then();
+        break;
+      case 'myfavoritepost':
+        getMyFavourPostList().then();
+        break;
+    }
+  }, [tabKey]);
 
   const renderUserInfo = ({ userAccount, telephone, address }: Partial<API.UserVO>) => {
     return (
@@ -217,7 +265,7 @@ const UserInfo: React.FC = () => {
       return (
         <QuestionList
           questionList={myHistoryList.records ?? []}
-          pageParams={pageParams}
+          pageParams={historyParams}
           onChange={onChange}
           total={myHistoryList.total ?? 0}
         />
@@ -227,7 +275,7 @@ const UserInfo: React.FC = () => {
       return (
         <QuestionList
           questionList={myFavourList.records ?? []}
-          pageParams={pageParams}
+          pageParams={favourParams}
           onChange={onChange}
           total={myFavourList.total ?? 0}
         />
@@ -237,7 +285,7 @@ const UserInfo: React.FC = () => {
       return (
         <PostList
           postList={myPostList.records ?? []}
-          pageParams={pageParams}
+          pageParams={postParams}
           onChange={onChange}
           total={myPostList.total ?? 0}
         />
@@ -247,7 +295,7 @@ const UserInfo: React.FC = () => {
       return (
         <PostList
           postList={myFavourPostList.records ?? []}
-          pageParams={pageParams}
+          pageParams={favourPostParams}
           onChange={onChange}
           total={myFavourPostList.total ?? 0}
         />

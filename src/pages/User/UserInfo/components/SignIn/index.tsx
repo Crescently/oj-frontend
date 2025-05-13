@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Flex, message, Tooltip } from 'antd';
+import { Button, Card, Col, message, Row, Tooltip } from 'antd';
 import { addDays, format, startOfWeek, subDays } from 'date-fns';
 import { signInUsingPost } from '@/services/onlinejudge-user-service/signInController';
 
@@ -92,33 +92,37 @@ const ContributionCalendar: React.FC<Props> = ({ userId, signedInDays, loadData 
 
   return (
     <Card variant="borderless">
-      <Flex align={'center'}>
-        <div>
-          <div style={{ display: 'flex', marginLeft: 30, marginBottom: 4 }}>{monthLabels}</div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', marginRight: 4 }}>
-              {WEEK_DAYS.map((day, index) => (
-                <div
-                  key={index}
-                  style={{
-                    height: SQUARE_SIZE + SQUARE_MARGIN * 2,
-                    fontSize: 12,
-                    color: '#666',
-                  }}
-                >
-                  {day}
-                </div>
-              ))}
+      <Row gutter={[16, 16]} align="middle">
+        <Col xs={24} md={18}>
+          <div>
+            <div style={{ display: 'flex', marginLeft: 30, marginBottom: 4 }}>{monthLabels}</div>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', marginRight: 4 }}>
+                {WEEK_DAYS.map((day, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      height: SQUARE_SIZE + SQUARE_MARGIN * 2,
+                      fontSize: 12,
+                      color: '#666',
+                    }}
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+              {weeks}
             </div>
-            {weeks}
           </div>
-        </div>
-        <div style={{ marginBottom: 16, marginLeft: 128 }}>
-          <Button type="primary" size={'large'} onClick={handleSignIn}>
-            签到
-          </Button>
-        </div>
-      </Flex>
+        </Col>
+        <Col xs={24} md={6}>
+          <div style={{ textAlign: 'center' }}>
+            <Button type="primary" size="large" onClick={handleSignIn}>
+              签到
+            </Button>
+          </div>
+        </Col>
+      </Row>
     </Card>
   );
 };

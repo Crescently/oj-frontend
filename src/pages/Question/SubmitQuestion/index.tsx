@@ -66,7 +66,7 @@ const SubmitQuestion = () => {
 
   const [pageParams, setPageParams] = useState<PageParams>({
     current: 1,
-    pageSize: 5,
+    pageSize: 7,
   });
 
   const onChange: PaginationProps['onChange'] = (current, pageSize) => {

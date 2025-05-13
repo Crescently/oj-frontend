@@ -7,18 +7,41 @@ export default [
       { name: '注册', path: '/user/register', component: './User/Register' },
     ],
   },
-  { path: '/home', name: '主页', icon: 'home', component: './Question/ViewQuestion' },
   {
-    path: '/admin',
-    name: '管理页',
-    icon: 'crown',
+    path: '/home',
+    name: '主页',
+    icon: 'home',
+    component: './Question/ViewQuestion',
+  },
+  {
+    path: '/history/question',
+    name: '提交记录',
+    icon: 'history',
+    component: './Question/QuestionHistory',
+  },
+  {
+    path: '/rank',
+    name: '排行榜',
+    icon: 'trophy',
+    component: './Question/QuestionRank',
+  },
+  {
+    path: '/add/question',
+    name: '创建题目',
+    icon: 'fileAdd',
     access: 'canAdmin',
-    routes: [
-      { path: '/admin', redirect: '/admin/user' },
-      { name: '用户管理', icon: 'table', path: '/admin/user', component: './Admin/User' },
-      { name: '题目管理', icon: 'table', path: '/admin/question', component: './Admin/Question' },
-      { name: '帖子管理', icon: 'table', path: '/admin/post', component: './Admin/Post' },
-    ],
+    component: './Question/AddQuestion',
+  },
+  {
+    path: '/question/update/:id',
+    access: 'canUser',
+    hideInMenu: true,
+    component: './Question/UpdateQuestion',
+  },
+  {
+    path: '/submit/question/:id',
+    hideInMenu: true,
+    component: './Question/SubmitQuestion',
   },
   {
     path: '/post',
@@ -42,34 +65,31 @@ export default [
     hideInMenu: true,
   },
   {
-    path: '/history/question',
-    name: '提交记录',
-    icon: 'history',
-    component: './Question/QuestionHistory',
-  },
-  {
-    path: '/rank',
-    name: '排行榜',
-    icon: 'trophy',
-    component: './Question/QuestionRank',
-  },
-  {
-    path: '/add/question',
-    name: '创建题目',
-    icon: 'fileAdd',
+    path: '/admin',
+    name: '管理页',
+    icon: 'crown',
     access: 'canAdmin',
-    component: './Question/AddQuestion',
-  },
-  {
-    path: '/update/question/:id',
-    access: 'canUser',
-    hideInMenu: true,
-    component: './Question/UpdateQuestion',
-  },
-  {
-    path: '/submit/question/:id',
-    hideInMenu: true,
-    component: './Question/SubmitQuestion',
+    routes: [
+      { path: '/admin', redirect: '/admin/user' },
+      {
+        name: '用户管理',
+        icon: 'table',
+        path: '/admin/user',
+        component: './Admin/User',
+      },
+      {
+        name: '题目管理',
+        icon: 'table',
+        path: '/admin/question',
+        component: './Admin/Question',
+      },
+      {
+        name: '帖子管理',
+        icon: 'table',
+        path: '/admin/post',
+        component: './Admin/Post',
+      },
+    ],
   },
   {
     path: '/account',
@@ -89,7 +109,13 @@ export default [
       },
     ],
   },
-
-  { path: '/', redirect: '/home' },
-  { path: '*', layout: false, component: './404' },
+  {
+    path: '/',
+    redirect: '/home',
+  },
+  {
+    path: '*',
+    layout: false,
+    component: './404',
+  },
 ];

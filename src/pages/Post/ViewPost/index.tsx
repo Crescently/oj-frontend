@@ -21,14 +21,14 @@ const ViewPost: React.FC = () => {
     pageSize: 4,
   });
 
-  const [postList, setPostList] = useState<API.PostVO[]>([]);
+  const [postList, setPostList] = useState<API.PagePostVO_>({});
   const [loading, setLoading] = useState(false);
 
   const getPostList = async () => {
     setLoading(true);
     const res = await listPostVoByPageUsingPost(queryParams);
     if (res.code === 0) {
-      setPostList(res.data?.records ?? []);
+      setPostList(res?.data ?? {});
     } else {
       message.error('获取帖子失败：' + res.msg);
     }
@@ -43,7 +43,6 @@ const ViewPost: React.FC = () => {
     const inputTime = moment(time);
     const now = moment();
 
-    // 判断是否超过一个月（30天）
     if (now.diff(inputTime, 'days') > 30) {
       return inputTime.format('YYYY-MM-DD HH:mm:ss');
     } else {
@@ -132,8 +131,9 @@ const ViewPost: React.FC = () => {
                 current: page,
               });
             },
+            total: postList.total,
           }}
-          dataSource={postList}
+          dataSource={postList.records}
           renderItem={(item) => (
             <List.Item
               key={item.id}
