@@ -375,6 +375,7 @@ declare namespace API {
     status?: number;
     updateTime?: string;
     userId?: number;
+    userVO?: UserVO;
   };
 
   type QuestionThumbAddRequest = {

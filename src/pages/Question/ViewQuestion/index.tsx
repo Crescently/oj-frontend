@@ -65,6 +65,7 @@ const ViewQuestion = () => {
             percent={acceptPercent}
             strokeLinecap="butt"
             strokeWidth={16}
+            format={(percent) => `${percent}%`}
           />
         );
       },

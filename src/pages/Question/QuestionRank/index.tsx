@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   List,
+  PaginationProps,
   Space,
   Splitter,
   Table,
@@ -49,6 +50,13 @@ const QuestionRank = () => {
     return (((item.acceptedNum || 0) / item.submitNum) * 100).toFixed(1);
   };
 
+  const onChange: PaginationProps['onChange'] = (current, pageSize) => {
+    setPageParams({
+      current,
+      pageSize,
+    });
+  };
+
   // 表格列定义
   const rankColumns: TableProps<API.QuestionSubmitVO>['columns'] = [
     {
@@ -59,7 +67,7 @@ const QuestionRank = () => {
     },
     {
       title: '用户',
-      dataIndex: ['questionVO', 'userVO', 'username'],
+      dataIndex: ['userVO', 'username'],
       render: (text: string) => <Typography.Text>{text}</Typography.Text>,
     },
     {
@@ -94,6 +102,14 @@ const QuestionRank = () => {
             loading={listLoading}
             dataSource={questionData?.records}
             rowKey="id"
+            pagination={{
+              position: 'bottom',
+              align: 'end',
+              current: pageParams.current,
+              pageSize: pageParams.pageSize,
+              total: questionData?.total ?? 0,
+              onChange: onChange,
+            }}
             renderItem={(item) => (
               <List.Item
                 onClick={() => setSelectedQuestion(item)}
