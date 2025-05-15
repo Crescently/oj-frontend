@@ -29,7 +29,7 @@ const AddPost: React.FC = () => {
     <PageContainer title={false}>
       <div
         style={{
-          maxWidth: 1000,
+          maxWidth: 960,
           margin: '0 auto',
           padding: '24px',
         }}
@@ -38,9 +38,9 @@ const AddPost: React.FC = () => {
           bodyStyle={{ paddingTop: 64 }}
           style={{
             position: 'relative',
-            borderRadius: 12,
-            height: 750,
+            borderRadius: 16,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06)',
+            backgroundColor: '#fff',
           }}
         >
           <div
@@ -76,26 +76,30 @@ const AddPost: React.FC = () => {
               label="标题"
               placeholder="请输入文章标题"
               rules={[{ required: true, message: '请输入文章标题' }]}
+              fieldProps={{
+                size: 'large',
+              }}
             />
 
             <Form.Item
               label={
-                <span>
+                <span style={{ fontWeight: 500 }}>
                   标签
-                  <Tooltip title="最多添加5个标签，使用回车确认">
+                  <Tooltip title="最多添加 5 个标签，使用回车确认">
                     <InfoCircleOutlined style={{ marginLeft: 6, color: '#8c8c8c' }} />
                   </Tooltip>
                 </span>
               }
               name="tags"
               rules={[{ required: true, message: '请至少添加一个标签' }]}
+              style={{ marginBottom: 24 }}
             >
               <TagInput />
             </Form.Item>
 
             <Form.Item
               label={
-                <span>
+                <span style={{ fontWeight: 500 }}>
                   内容
                   <Tooltip title="支持 Markdown 语法，可使用预览模式">
                     <InfoCircleOutlined style={{ marginLeft: 6, color: '#8c8c8c' }} />
@@ -104,6 +108,7 @@ const AddPost: React.FC = () => {
               }
               name="content"
               rules={[{ required: true, message: '请输入文章内容' }]}
+              style={{ marginBottom: 32, height: 400 }}
             >
               <MdEditor />
             </Form.Item>

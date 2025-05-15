@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { history, useRequest } from '@umijs/max';
+import { history, useModel, useRequest } from '@umijs/max';
 import {
   Button,
   Divider,
@@ -18,6 +18,8 @@ import {
   listQuestionSubmitVoByPageUsingPost,
   listQuestionVoByPageUsingPost,
 } from '@/services/onlinejudge-question-service/questionController';
+import { InboxOutlined, SearchOutlined } from '@ant-design/icons';
+import './index.css';
 
 const QuestionRank = () => {
   const { token } = theme.useToken();
@@ -37,7 +39,8 @@ const QuestionRank = () => {
   } = useRequest((qid: number) => listQuestionSubmitVoByPageUsingPost({ questionId: qid }), {
     manual: true,
   });
-
+  const { initialState } = useModel('@@initialState');
+  const currentUserId = initialState?.currentUser?.id?.toString() || '';
   // 处理题目选择
   useEffect(() => {
     if (selectedQuestion?.id) {
@@ -57,39 +60,76 @@ const QuestionRank = () => {
     });
   };
 
-  // 表格列定义
   const rankColumns: TableProps<API.QuestionSubmitVO>['columns'] = [
     {
       title: '排名',
       dataIndex: 'id',
       width: 80,
-      render: (_: any, __: any, index: number) => index + 1,
+      align: 'center',
+      render: (_: any, __: any, index: number) => {
+        const colors = ['#fadb14', '#d4b106', '#a68200'];
+        const medals = ['🥇', '🥈', '🥉'];
+        if (index < 3) {
+          return (
+            <Typography.Text strong style={{ color: colors[index], fontSize: 18 }}>
+              {medals[index]} {index + 1}
+            </Typography.Text>
+          );
+        }
+        return <Typography.Text>{index + 1}</Typography.Text>;
+      },
     },
     {
       title: '用户',
       dataIndex: ['userVO', 'username'],
-      render: (text: string) => <Typography.Text>{text}</Typography.Text>,
+      render: (text: string) => (
+        <Typography.Text style={{ fontWeight: 500 }}>{text}</Typography.Text>
+      ),
+      align: 'center',
+      width: 160,
     },
     {
       title: '用时（ms）',
       dataIndex: ['judgeInfo', 'time'],
+      align: 'center',
       sorter: (a: any, b: any) => a.judgeInfo.time - b.judgeInfo.time,
-      defaultSortOrder: 'ascend',
+      render: (text: number) => <Typography.Text>{text?.toLocaleString() ?? '-'}</Typography.Text>,
+      width: 120,
     },
     {
       title: '内存（KB）',
       dataIndex: ['judgeInfo', 'memory'],
+      align: 'center',
       sorter: (a: any, b: any) => a.judgeInfo.memory - b.judgeInfo.memory,
-      defaultSortOrder: 'ascend',
+      render: (text: number) => <Typography.Text>{text?.toLocaleString() ?? '-'}</Typography.Text>,
+      width: 120,
     },
     {
       title: '提交时间',
       dataIndex: 'createTime',
-      render: (text: string) => new Date(text).toLocaleString(),
+      width: 180,
+      render: (text: string) =>
+        text ? (
+          <Typography.Text>
+            {new Date(text).toLocaleString(undefined, {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+            })}
+          </Typography.Text>
+        ) : (
+          '-'
+        ),
+      align: 'center',
     },
     {
       title: '语言',
       dataIndex: 'language',
+      width: 100,
+      align: 'center',
       render: (text: string) => <Tag color="processing">{text}</Tag>,
     },
   ];
@@ -125,7 +165,9 @@ const QuestionRank = () => {
                 <List.Item.Meta
                   title={
                     <Space>
-                      <Typography.Text strong>{item.title}</Typography.Text>
+                      <Typography.Text strong ellipsis={{ tooltip: item.title }}>
+                        {item.title}
+                      </Typography.Text>
                     </Space>
                   }
                   description={
@@ -143,11 +185,19 @@ const QuestionRank = () => {
           <div style={{ padding: 24 }}>
             {selectedQuestion ? (
               <>
-                <Space direction={'horizontal'} align={'baseline'} size={'large'}>
-                  <Typography.Title level={4} style={{ marginBottom: 24 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 24,
+                  }}
+                >
+                  <Typography.Title level={4} style={{ margin: 0 }}>
                     {selectedQuestion.title} - 最佳解答排行榜
                   </Typography.Title>
                   <Button
+                    icon={<SearchOutlined />}
                     type={'primary'}
                     onClick={() => {
                       history.push(`/submit/question/${selectedQuestion?.id}`);
@@ -155,11 +205,11 @@ const QuestionRank = () => {
                   >
                     查看题目详情
                   </Button>
-                </Space>
+                </div>
                 <Table
                   columns={rankColumns}
                   loading={rankLoading}
-                  dataSource={rankData?.records}
+                  dataSource={rankData?.records?.filter((item) => item.status === 2)}
                   rowKey="id"
                   pagination={false}
                   bordered
@@ -167,11 +217,19 @@ const QuestionRank = () => {
                   locale={{
                     emptyText: '暂无提交记录',
                   }}
+                  rowClassName={(record) => {
+                    const uid = record.userVO?.id?.toString();
+                    return uid === currentUserId ? 'highlight-row' : '';
+                  }}
                 />
               </>
             ) : (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <Typography.Text type="secondary">请从左侧选择题目查看排行榜</Typography.Text>
+                <Typography.Text type="secondary">
+                  <InboxOutlined style={{ fontSize: 24, marginBottom: 12 }} />
+                  <br />
+                  请从左侧选择题目查看排行榜
+                </Typography.Text>
               </div>
             )}
           </div>

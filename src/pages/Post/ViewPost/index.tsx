@@ -104,32 +104,38 @@ const ViewPost: React.FC = () => {
 
   return (
     <PageContainer title={false}>
-      <div style={{ maxWidth: 1000, margin: '0 auto 20px' }}>
-        <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-          <Input
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '16px 0' }}>
+        {/* 搜索和发帖按钮 */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 24,
+          }}
+        >
+          <Input.Search
             placeholder="输入标题进行搜索"
             allowClear
+            enterButton
             onChange={handleInputChange}
-            style={{ flex: 1 }}
+            style={{ maxWidth: 400 }}
           />
           <Button type="primary" icon={<FormOutlined />} onClick={() => history.push('/post/add')}>
             发帖
           </Button>
         </div>
 
+        {/* 帖子列表 */}
         <List
           itemLayout="vertical"
           size="large"
-          style={{ maxWidth: '100%', cursor: 'pointer' }}
           loading={loading}
           pagination={{
             current: queryParams.current,
             pageSize: queryParams.pageSize,
             onChange: (page) => {
-              setQueryParams({
-                ...queryParams,
-                current: page,
-              });
+              setQueryParams({ ...queryParams, current: page });
             },
             total: postList.total,
           }}
@@ -137,57 +143,54 @@ const ViewPost: React.FC = () => {
           renderItem={(item) => (
             <List.Item
               key={item.id}
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 8,
+                padding: 24,
+                marginBottom: 16,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                transition: 'box-shadow 0.3s',
+              }}
               onClick={() => {
                 history.push(`/post/detail/${item.id}`);
               }}
               actions={[
-                <IconText icon={StarOutlined} text={item.favourNum} key="list-vertical-star-o" />,
-                <IconText icon={LikeOutlined} text={item.thumbNum} key="list-vertical-like-o" />,
-                <IconText
-                  icon={MessageOutlined}
-                  text={item.commentCount ?? 0}
-                  key="list-vertical-message"
-                />,
-                <IconText
-                  icon={EyeOutlined}
-                  text={item.viewCount ?? 0}
-                  key="list-vertical-view-o"
-                />,
+                <IconText icon={StarOutlined} text={item.favourNum} key="star" />,
+                <IconText icon={LikeOutlined} text={item.thumbNum} key="like" />,
+                <IconText icon={MessageOutlined} text={item.commentCount ?? 0} key="comment" />,
+                <IconText icon={EyeOutlined} text={item.viewCount ?? 0} key="view" />,
               ]}
             >
               <List.Item.Meta
                 avatar={
-                  <Popover
-                    content={renderUserCard(item.userVO)}
-                    trigger="hover"
-                    placement={'bottom'}
-                  >
-                    <Avatar src={item.userVO?.userPic} />
+                  <Popover content={renderUserCard(item.userVO)} trigger="hover">
+                    <Avatar size="large" src={item.userVO?.userPic} />
                   </Popover>
                 }
                 title={
-                  <Popover
-                    content={renderUserCard(item.userVO)}
-                    trigger="hover"
-                    placement={'bottom'}
-                  >
-                    <span style={{ cursor: 'pointer' }}>{item.title}</span>
-                  </Popover>
+                  <Typography.Title level={5} style={{ marginBottom: 4 }}>
+                    {item.title}
+                  </Typography.Title>
                 }
                 description={
-                  <>
-                    <Popover
-                      content={renderUserCard(item.userVO)}
-                      trigger="hover"
-                      placement={'bottom'}
-                    >
-                      <span style={{ cursor: 'pointer' }}>{item.userVO?.username}</span>
-                    </Popover>
-                    {' · ' + formatTime(item.createTime)}
-                  </>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      color: '#888',
+                      fontSize: 13,
+                    }}
+                  >
+                    <span>{item.userVO?.username}</span>
+                    <span>{formatTime(item.createTime)}</span>
+                  </div>
                 }
               />
-              <Typography.Text ellipsis>{removeMarkdown(item.content ?? '')}</Typography.Text>
+              <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                {removeMarkdown(item.content ?? '')}
+              </Typography.Paragraph>
             </List.Item>
           )}
         />

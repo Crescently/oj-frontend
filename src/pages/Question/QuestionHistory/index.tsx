@@ -1,7 +1,7 @@
 import { PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { listQuestionSubmitVoByPageUsingPost } from '@/services/onlinejudge-question-service/questionController';
 import React from 'react';
-import { Space } from 'antd';
+import { Space, Tag, Tooltip } from 'antd';
 import Typography from 'antd/lib/typography';
 import { history } from '@@/core/history';
 import { useModel } from '@umijs/max';
@@ -12,61 +12,74 @@ const QuestionHistory: React.FC = () => {
 
   const columns: ProColumns<API.QuestionSubmitVO>[] = [
     {
-      title: '题目ID',
-      dataIndex: 'questionId',
-      valueType: 'text',
-      hideInSearch: true,
-    },
-    {
       title: '题目名称',
-      render: (_, record) => {
-        return <Typography.Text>{record.questionVO?.title}</Typography.Text>;
-      },
+      render: (_, record) => (
+        <Tooltip title={record.questionVO?.title}>
+          <Typography.Text
+            style={{
+              display: 'block',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            strong
+          >
+            {record.questionVO?.title}
+          </Typography.Text>
+        </Tooltip>
+      ),
+      ellipsis: true,
+      width: 260,
+      align: 'center',
     },
     {
       title: '使用语言',
       dataIndex: 'language',
       valueType: 'text',
+      width: 120,
+      align: 'center',
     },
     {
       title: '判题信息',
       dataIndex: 'judgeInfo',
+      width: 260,
+      align: 'center',
       render: (_, record) => {
-        // 使用解构语法提取判题信息并设置默认值
         const { message, memory, time } = record.judgeInfo || {};
-
-        // 格式化显示内容
         const formatMemory = memory ? `${memory} KB` : null;
         const formatTime = time ? `${time} ms` : null;
 
         return (
-          <Space size={8} style={{ flexWrap: 'wrap' }}>
-            {/* 消息 - 突出显示 */}
+          <Space size={12} wrap>
             {message && (
-              <Typography.Text
-                strong
-                type={message === '成功' ? 'success' : 'danger'}
-                style={{ lineHeight: 1.5 }}
-              >
-                <MessageOutlined style={{ marginRight: 4 }} />
-                {message}
-              </Typography.Text>
+              <Tooltip title={'判题信息'}>
+                <Typography.Text
+                  strong
+                  type={message === '成功' ? 'success' : 'danger'}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <MessageOutlined style={{ marginRight: 6 }} />
+                  {message}
+                </Typography.Text>
+              </Tooltip>
             )}
 
-            {/* 内存消耗 - 使用蓝色系 */}
             {formatMemory && (
-              <Typography.Text type="secondary" style={{ display: 'flex', alignItems: 'center' }}>
-                <DatabaseOutlined style={{ marginRight: 4, color: '#1890ff' }} />
-                内存：{formatMemory}
-              </Typography.Text>
+              <Tooltip title={'消耗内存'}>
+                <Typography.Text type="secondary" style={{ display: 'flex', alignItems: 'center' }}>
+                  <DatabaseOutlined style={{ marginRight: 6, color: '#1890ff' }} />
+                  {formatMemory}
+                </Typography.Text>
+              </Tooltip>
             )}
 
-            {/* 时间消耗 - 使用绿色系 */}
             {formatTime && (
-              <Typography.Text type="secondary" style={{ display: 'flex', alignItems: 'center' }}>
-                <ClockCircleOutlined style={{ marginRight: 4, color: '#52c41a' }} />
-                时间：{formatTime}
-              </Typography.Text>
+              <Tooltip title={'执行时间'}>
+                <Typography.Text type="secondary" style={{ display: 'flex', alignItems: 'center' }}>
+                  <ClockCircleOutlined style={{ marginRight: 6, color: '#52c41a' }} />
+                  {formatTime}
+                </Typography.Text>
+              </Tooltip>
             )}
           </Space>
         );
@@ -76,43 +89,46 @@ const QuestionHistory: React.FC = () => {
     {
       title: '题目状态',
       dataIndex: 'status',
+      width: 120,
+      align: 'center',
+      hideInSearch: true,
       valueEnum: {
         0: {
-          text: '等待中',
+          text: <Tag color={'blue'}> 等待中</Tag>,
         },
         1: {
-          text: '判题中',
+          text: <Tag color={'yellow'}> 判题中</Tag>,
         },
         2: {
-          text: '成功',
+          text: <Tag color={'green'}> 成功</Tag>,
         },
         3: {
-          text: '失败',
+          text: <Tag color={'red'}> 失败</Tag>,
         },
       },
-      hideInSearch: true,
     },
     {
-      title: '创建时间',
+      title: '提交时间',
       dataIndex: 'createTime',
       valueType: 'date',
+      width: 140,
+      align: 'center',
       hideInSearch: true,
     },
     {
-      title: '',
+      title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 110,
+      align: 'center',
       render: (_, record) => (
-        <Space size={'middle'}>
-          <Typography.Link
-            key={'submit'}
-            onClick={() => {
-              history.push(`/submit/question/${record.questionId}`);
-            }}
-          >
-            查看详情
-          </Typography.Link>
-        </Space>
+        <Typography.Link
+          onClick={() => {
+            history.push(`/submit/question/${record.questionId}`);
+          }}
+        >
+          查看题目详情
+        </Typography.Link>
       ),
     },
   ];

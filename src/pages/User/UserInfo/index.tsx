@@ -6,7 +6,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
+import { history, useModel } from '@umijs/max';
 import {
   Avatar,
   Card,
@@ -22,7 +22,6 @@ import {
 import React, { useEffect, useState } from 'react';
 import useStyles from './UserInfo.style';
 import QuestionList from '@/pages/User/UserInfo/components/QuestionList';
-import { getUserInfoUsingGet } from '@/services/onlinejudge-user-service/userController';
 import { listMyFavourQuestionByPageUsingPost } from '@/services/onlinejudge-question-service/questionFavourController';
 import { listMyQuestionVoByPageUsingPost } from '@/services/onlinejudge-question-service/questionController';
 import { MyDivider } from '@/components';
@@ -43,16 +42,7 @@ const UserInfo: React.FC = () => {
   const [myPostList, setMyPostList] = useState<API.PagePostVO_>({});
   const [myFavourPostList, setMyFavourPostList] = useState<API.PagePostVO_>({});
   const [signedInDays, setSignedInDays] = useState<string[]>([]);
-
-  const getCurrentUser = async () => {
-    const res = await getUserInfoUsingGet();
-    if (res.code === 0 && res.data) {
-      setCurrentUser(res.data);
-    } else {
-      history.push('/user/login');
-      message.error(res.msg);
-    }
-  };
+  const { initialState } = useModel('@@initialState');
 
   const [historyParams, setHistoryParams] = useState<PageParams>({ current: 1, pageSize: 2 });
   const [favourParams, setFavourParams] = useState<PageParams>({ current: 1, pageSize: 2 });
@@ -127,33 +117,17 @@ const UserInfo: React.FC = () => {
   };
 
   useEffect(() => {
-    getCurrentUser().then();
     loadData().then();
   }, []);
 
   useEffect(() => {
-    if (tabKey === 'history') {
-      getMyHistoryList().then();
+    if (initialState === undefined) return;
+    if (!initialState.currentUser) {
+      history.push('/user/login');
+    } else {
+      setCurrentUser(initialState.currentUser);
     }
-  }, [historyParams]);
-
-  useEffect(() => {
-    if (tabKey === 'favourites') {
-      getMyFavourList().then();
-    }
-  }, [favourParams]);
-
-  useEffect(() => {
-    if (tabKey === 'mypost') {
-      getMyPostList().then();
-    }
-  }, [postParams]);
-
-  useEffect(() => {
-    if (tabKey === 'myfavoritepost') {
-      getMyFavourPostList().then();
-    }
-  }, [favourPostParams]);
+  }, [initialState]);
 
   useEffect(() => {
     // tab切换时主动触发当前tab数据加载
@@ -171,7 +145,7 @@ const UserInfo: React.FC = () => {
         getMyFavourPostList().then();
         break;
     }
-  }, [tabKey]);
+  }, [tabKey, historyParams, favourParams, postParams, favourPostParams]);
 
   const renderUserInfo = ({ userAccount, telephone, address }: Partial<API.UserVO>) => {
     return (
@@ -332,13 +306,15 @@ const UserInfo: React.FC = () => {
                       />
                     )}
                   </Space>
-                  <div className={styles.name}>{currentUser?.username}</div>
-                  <div>{currentUser?.signature}</div>
+                  <div className={styles.name}>{currentUser.username}</div>
+                  <div>{currentUser.signature || '暂无签名'}</div>
                 </div>
                 {renderUserInfo(currentUser)}
                 <Divider dashed />
                 <Descriptions title={'个人简介'} column={1}>
-                  <Descriptions.Item> {currentUser?.description}</Descriptions.Item>
+                  <Descriptions.Item>
+                    {currentUser.description || '这个人很神秘~'}
+                  </Descriptions.Item>
                 </Descriptions>
                 <Divider dashed />
                 <Row gutter={16}>

@@ -10,8 +10,8 @@ import { getUserInfoUsingGet } from '@/services/onlinejudge-user-service/userCon
 import logo from '../public/logo.png';
 const loginPath = '/user/login';
 
-export async function getInitialState(): Promise<initialState> {
-  const initialState: initialState = {
+export async function getInitialState(): Promise<InitialState> {
+  const initialState: InitialState = {
     currentUser: undefined,
   };
 
